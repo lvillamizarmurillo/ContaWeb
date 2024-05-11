@@ -6,10 +6,11 @@ use NexusRouter\Core\Router;
     Router::get('/document-failed', 'Controllers/EmpresaController', "getDocumentsFailedData");
     Router::get('/document-date/$dateStart/$dateEnd', 'Controllers/EmpresaController', "getDocumentsinDateEspecificData");
     Router::get('/document-from-each-company', 'Controllers/EmpresaController', "getDocumentsFromEachCompanyData");
-    Router::get('/document-failed-more-than-three', 'Controllers/EmpresaController', "getdocumentsFailedMoreThanThreeData");
-    Router::get('/document-out-range', 'Controllers/EmpresaController', "documentsOutOfRangeData");
-    Router::get('/document-out-range', 'Controllers/EmpresaController', "getdocumentstotalInvoiceData");
-    Router::get('/number-complete-repeated', 'Controllers/EmpresaController', "getnumberCompleteRepeatedData");
+    Router::get('/document-failed-more-than-three', 'Controllers/EmpresaController', "getDocumentsFailedMoreThanThreeData");
+    Router::get('/document-out-range', 'Controllers/EmpresaController', "getDocumentsOutOfRangeData");
+    Router::get('/document-out-range', 'Controllers/EmpresaController', "getDocumentstotalInvoiceData");
+    Router::get('/number-complete-repeated', 'Controllers/EmpresaController', "getNumberCompleteRepeatedData");
+    Router::post('/save-new-document', 'Controllers/EmpresaController', "postSaveNewDocumentData");
     Router::post('/save-new-document', 'Controllers/EmpresaController', "postsaveNewDocumentData");
 
 

@@ -46,7 +46,7 @@
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body mx-auto">Listar empresas</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
+                                        <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">Ver Detalles</button>
                                         <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -73,7 +73,7 @@
                                 <div class="card bg-success text-white mb-4">
                                     <div class="card-body mx-auto">Registrar Documento</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <button type="button" class="btn btn-success mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint2">View Details</button>
+                                        <button type="button" class="btn btn-success mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint2">Ver Detalles</button>
                                         <div class="modal fade" id="enpoint2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -109,7 +109,7 @@
                                                   <input type="number" class="form-control" step="0.01" name="base" id="base" aria-describedby="base">
                                                   <label for="base" class="text-black">Impuestos:</label>
                                                   <input type="number" class="form-control" step="0.01" name="impuestos" id="impuestos" aria-describedby="impuestos">
-                                                  <div id="text" class="form-text text-black" >Cree un document de empresa.</div>
+                                                  <div id="text" class="form-text text-black" >Crea un documento de empresa.</div>
                                                 </div>
                                                 <button type="submit" class="btn btn-success">Crear Documento</button>
                                               </form>
@@ -127,22 +127,28 @@
                                 <div class="card bg-warning text-white mb-4">
                                     <div class="card-body mx-auto">Actualizar documento</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <button type="button" class="btn btn-warning mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
-                                        <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <button type="button" class="btn btn-warning mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint3">Ver Detalles</button>
+                                        <div class="modal fade" id="enpoint3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header mx-auto">
-                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint1">
+                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint3">
                                                 <div class="mb-3 position-relative">
-                                                  <label for="exampleInputEmail1" class="form-label text-black ">Numeracion de Empresa</label>
-                                                  <input type="text" class="form-control" id="InputNumeracion" aria-describedby="emailHelp">
-                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
+                                                  <label for="idDocument" class="form-label text-black ">ID de Documento: </label>
+                                                  <input type="text" class="form-control" id="documentoId" name="documentoId" required aria-describedby="emailHelp">
+                                                  <label for="fecha" class="text-black">Nueva fecha:</label>
+                                                  <input type="date" id="newfecha" class="form-control">
+                                                  <label for="base" class="text-black">Nueva base:</label>
+                                                  <input type="number" class="form-control" step="0.01" name="newbase" id="newbase" aria-describedby="base">
+                                                  <label for="base" class="text-black">Nuevos mpuestos:</label>
+                                                  <input type="number" class="form-control" step="0.01" name="newimpuestos" id="newimpuestos" aria-describedby="impuestos">
+                                                  <div id="text" class="form-text text-black" >Actualiza un documento de empresa.</div>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">Buscar</button>
+                                                <button type="submit" class="btn btn-warning">Actualizar Documento</button>
                                               </form>
                                             </div>
                                             <div class="modal-footer">
-                                              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
                                           </div>
                                         </div>
@@ -154,18 +160,18 @@
                                 <div class="card bg-danger text-white mb-4">
                                     <div class="card-body mx-auto">Eliminar documento</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <button type="button" class="btn btn-danger mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
-                                        <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <button type="button" class="btn btn-danger mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint4">Ver Detalles</button>
+                                        <div class="modal fade" id="enpoint4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header mx-auto">
-                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint1">
+                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint4">
                                                 <div class="mb-3 position-relative">
-                                                  <label for="exampleInputEmail1" class="form-label text-black ">Numeracion de Empresa</label>
-                                                  <input type="text" class="form-control" id="InputNumeracion" aria-describedby="emailHelp">
-                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
+                                                  <label for="exampleInputEmail1" class="form-label text-black ">ID del Documento a Eliminar: </label>
+                                                  <input type="text" class="form-control" id="deleteDocumentId" name="deleteDocumentId" aria-describedby="emailHelp" required>
+                                                  <div id="text" class="form-text text-black" >Elimina un documento.</div>
                                                 </div>
-                                                <button type="submit" class="btn btn-danger">Buscar</button>
+                                                <button type="submit" class="btn btn-danger">Eliminar Documento</button>
                                               </form>
                                             </div>
                                             <div class="modal-footer">

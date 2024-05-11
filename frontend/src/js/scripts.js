@@ -99,3 +99,35 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     });
 });
+
+$(document).ready(function() {
+    $('#updateDocumentoForm').submit(function(e) {
+        e.preventDefault();
+
+        var documentoId = $('#documentoId').val();
+        var fecha = $('#fecha').val();
+        var base = $('#base').val();
+        var impuestos = $('#impuestos').val();
+
+        // Realizar validaciones adicionales si es necesario
+
+        // Realizar la solicitud PUT usando AJAX
+        $.ajax({
+            url: 'actualizar_documento.php',
+            method: 'PUT',
+            data: {
+                iddocumento: documentoId,
+                fecha: fecha,
+                base: base,
+                impuestos: impuestos
+            },
+            success: function(response) {
+                $('#message').html('<p>Documento actualizado correctamente.</p>');
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                $('#message').html('<p>Error al actualizar documento: ' + errorMessage + '</p>');
+            }
+        });
+    });
+});

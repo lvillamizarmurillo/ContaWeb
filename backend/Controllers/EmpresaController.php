@@ -35,48 +35,66 @@ class EmpresaController extends EmpresaModel
 
 	}
         
-        public function getdocumentsFailedMoreThanThree(){//v1
+        public function getDocumentsFailedMoreThanThree(){//v1
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::getdocumentsFailedMoreThanThree();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::getDocumentsFailedMoreThanThree();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}
         
-        public function getdocumentsOutOfRange(){//v1
+        public function getDocumentsOutOfRange(){//v1
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::getdocumentsOutOfRangeData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::getDocumentsOutOfRangeData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}
         
-        public function getdocumentstotalInvoice(){//v1
+        public function getDocumentstotalInvoice(){//v1
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::getdocumentstotalInvoiceData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::getDocumentstotalInvoiceData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}
         
-        public function getnumberCompleteRepeated(){//v1
+        public function getNumberCompleteRepeated(){//v1
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::getnumberCompleteRepeatedData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::getNumberCompleteRepeatedData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}
 
         
-        public function postsaveNewDocument(){//v1
+        public function postSaveNewDocument(){//v1
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::postsaveNewDocumentData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::postSaveNewDocumentData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		var_dump($obj_users);
+
+	}
+        
+        public function putSaveDocumentId(){//v1
+		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
+		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
+
+		$obj_users = EmpresaModel::putSaveDocumentIdData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		var_dump($obj_users);
+
+	}
+        
+        public function deleteDocumentId(){//v1
+		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
+		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
+
+		$obj_users = EmpresaModel::deleteDocumentIdData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}
