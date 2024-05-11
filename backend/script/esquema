@@ -1,0 +1,48 @@
+CREATE TABLE empresa (
+    idempresa SERIAL PRIMARY KEY,
+    identificacion VARCHAR(16) NOT NULL,
+    razonsocial VARCHAR(256)
+);
+
+CREATE TABLE tipodocumento (
+    idtipodocumento SERIAL PRIMARY KEY,
+    description VARCHAR(256) NOT NULL
+);
+
+CREATE TABLE numeracion (
+    idnumeracion SERIAL PRIMARY KEY,
+    idtipodocumento INTEGER NOT NULL REFERENCES tipodocumento(idtipodocumento),
+    idempresa INTEGER NOT NULL REFERENCES empresa(idempresa),
+    prefijo VARCHAR(8) NOT NULL,
+    consecutivoinicial INTEGER NOT NULL,
+    consecutivofinal INTEGER NOT NULL,
+    vigenciainicial DATE NOT NULL,
+    vigenciafinal DATE NOT NULL
+);
+
+CREATE TABLE estado (
+    idestado SERIAL PRIMARY KEY,
+    description VARCHAR(256) NOT NULL,
+    exitoso BOOLEAN NOT NULL
+);
+
+CREATE TABLE documento (
+    iddocumento SERIAL PRIMARY KEY,
+    idnumeracion INTEGER NOT NULL REFERENCES numeracion(idnumeracion),
+    idestado INTEGER NOT NULL REFERENCES estado(idestado),
+    fecha DATE NOT NULL,
+    base DECIMAL NOT NULL,
+    impuestos DECIMAL NOT NULL
+);
+
+ALTER TABLE numeracion
+    ADD CONSTRAINT fk_numeracion_tipodocumento FOREIGN KEY (idtipodocumento) REFERENCES tipodocumento(idtipodocumento);
+
+ALTER TABLE numeracion
+    ADD CONSTRAINT fk_numeracion_empresa FOREIGN KEY (idempresa) REFERENCES empresa(idempresa);
+
+ALTER TABLE documento
+    ADD CONSTRAINT fk_documento_numeracion FOREIGN KEY (idnumeracion) REFERENCES numeracion(idnumeracion);
+
+ALTER TABLE documento
+    ADD CONSTRAINT fk_documento_estado FOREIGN KEY (idestado) REFERENCES estado(idestado);

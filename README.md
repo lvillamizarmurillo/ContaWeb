@@ -29,29 +29,137 @@ El proyecto sigue una estructura de carpetas organizada de la siguiente manera:
 
 ## Uso
 
-1. **Endpoints Disponibles**:
-   - `/api/documentos`: Gestiona los documentos contables.
-   - `/api/empresas`: Gestiona las empresas registradas.
-   - `/api/numeraciones`: Gestiona las numeraciones autorizadas por la DIAN.
-   - `/api/estados`: Gestiona los estados de validación de documentos.
-2. **Ejemplos de Uso**:
-   - Para listar todos los documentos: `GET /api/documentos`.
-   - Para crear un nuevo documento: `POST /api/documentos`.
+1. Para ejecutar las consultas unicamente debes ejecutar los scriptis, de los 3 archivo que hay en la carpeta backend/script/*.sql
 
-## Contribución
+   -Primero copiar y ejecutar el esquema.sql
 
-Si deseas contribuir a este proyecto, por favor sigue estos pasos:
+   -Luego copiar y ejecutar el insertarDatos.sql
 
-1. Realiza un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus cambios y haz commit (`git commit -am 'Agregar nueva funcionalidad'`).
-4. Haz push a la rama (`git push origin feature/nueva-funcionalidad`).
-5. Crea un nuevo pull request.
+   -Por ultimo mirar en el ultimo archivo consultas.sql donde se visualizan todas las consultas o puedes seguir con el readme donde aparece una por una
 
-## Autor
+---
 
-Creado por [Tu Nombre] - [Tu Correo Electrónico]
+Claro, aquí te presento las 7 consultas con comentarios para tu archivo README, enumeradas y explicadas:
 
-## Licencia
+---
 
-Este proyecto está bajo la Licencia MIT.
+### Consulta 1: Empresas con Más Documentos Fallidos que Exitosos
+
+Esta consulta lista las empresas que tienen más documentos fallidos que exitosos.
+
+```sql
+SELECT e.idempresa, e.razonsocial,
+       COUNT(CASE WHEN es.exitoso THEN 1 END) AS exitosos,
+       COUNT(CASE WHEN NOT es.exitoso THEN 1 END) AS fallidos
+FROM empresa e
+INNER JOIN numeracion n ON e.idempresa = n.idempresa
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+INNER JOIN estado es ON d.idestado = es.idestado
+GROUP BY e.idempresa, e.razonsocial
+HAVING COUNT(CASE WHEN NOT es.exitoso THEN 1 END) > COUNT(CASE WHEN es.exitoso THEN 1 END);
+```
+
+### Consulta 2: Facturas, Notas Débito y Notas Crédito por Empresa entre Fechas
+
+Devuelve la cantidad de facturas, notas débito y notas crédito generadas por cada empresa en un rango de fechas específico.
+
+```sql
+SELECT e.razonsocial,
+       SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
+       SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
+       SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+WHERE d.fecha BETWEEN 'fecha_inicio' AND 'fecha_fin'
+GROUP BY e.razonsocial;
+```
+
+### Consulta 3: Cantidad de Documentos por Estado y Empresa
+
+Lista la cantidad de documentos en cada estado para cada empresa.
+
+```sql
+SELECT e.razonsocial, es.description AS estado,
+       COUNT(*) AS cantidad_documentos
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+LEFT JOIN estado es ON d.idestado = es.idestado
+GROUP BY e.razonsocial, es.description;
+```
+
+### Consulta 4: Empresas con Más de 3 Documentos No Exitosos
+
+Identifica las empresas que tienen más de 3 documentos en estados no exitosos.
+
+```sql
+SELECT e.razonsocial
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+LEFT JOIN estado es ON d.idestado = es.idestado
+WHERE NOT es.exitoso
+GROUP BY e.razonsocial
+HAVING COUNT(*) > 3;
+```
+
+### Consulta 5: Documentos con Número o Fecha Fuera del Rango Permitido por la DIAN
+
+Muestra la cantidad de documentos por empresa que tienen números o fechas fuera del rango permitido por la DIAN.
+
+```sql
+SELECT e.razonsocial,
+       SUM(CASE WHEN d.fecha NOT BETWEEN n.vigenciainicial AND n.vigenciafinal THEN 1 ELSE 0 END) AS cantidad_fecha_fuera_rango,
+       SUM(CASE WHEN d.idnumeracion IS NULL OR d.idnumeracion NOT BETWEEN n.consecutivoinicial AND n.consecutivofinal THEN 1 ELSE 0 END) AS cantidad_numero_fuera_rango
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+GROUP BY e.razonsocial;
+```
+
+### Consulta 6: Total de Dinero Recibido por Facturas por Empresa
+
+Calcula el total de dinero recibido (base + impuestos) solo para facturas por cada empresa.
+
+```sql
+SELECT e.razonsocial,
+       SUM(d.base + d.impuestos) AS total_dinero_recibido
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+WHERE td.description = 'Factura'
+GROUP BY e.razonsocial;
+```
+
+### Consulta 7: Identificar Números Completos Repetidos
+
+Busca números completos duplicados en la base de datos y cuenta sus repeticiones.
+
+```sql
+SELECT prefijo || CAST(n.idnumeracion AS VARCHAR) AS numero_completo,
+       COUNT(*) AS cantidad_repeticiones
+FROM numeracion n
+GROUP BY numero_completo
+HAVING COUNT(*) > 1;
+```
+
+---
+
+Para ejecutar estas consultas, simplemente copia y pega el código SQL en tu entorno de gestión de bases de datos PostgreSQL.
+
+## Interfaz
+
+1. ngresa por teminal a la carpeta del proyecto
+
+2. Usa el siguiente comando para inicializar el frontend `npm run start` 
+
+3. Iniciar con Apache o levantar el api del backend.
+
+4. Usar los endpoints creados en la pagina de Dashboard.
+
+5. Para usar cada endpotn usa el ver detalles y llenar los datos que correspondan
+
+   ![](/home/uwuntu/.config/Typora/typora-user-images/image-20240511112135915.png)

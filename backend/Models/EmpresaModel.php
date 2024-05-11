@@ -1,7 +1,6 @@
 <?php
 
-class EmpresaModel 
-{
+class EmpresaModel {
     // Variables protegidas
     protected $dateStart;
     protected $dateEnd;
@@ -12,27 +11,6 @@ class EmpresaModel
     {
         // Inicializar la conexión a la base de datos
         $this->connect = (new Connection())->startConnection();
-    }
-
-    // Getters y Setters
-    public function getDateStart()
-    {
-        return $this->dateStart;
-    }
-
-    public function setDateStart($dateStart)
-    {
-        $this->dateStart = $dateStart;
-    }
-
-    public function getDateEnd()
-    {
-        return $this->dateEnd;
-    }
-
-    public function setDateEnd($dateEnd)
-    {
-        $this->dateEnd = $dateEnd;
     }
     
 

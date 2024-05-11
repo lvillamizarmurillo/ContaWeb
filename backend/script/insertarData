@@ -1,0 +1,110 @@
+INSERT INTO estado (description, exitoso)
+VALUES
+    ('Correcto', true),
+    ('Validandose', true),
+    ('Validado', true),
+    ('Invalidado', false),
+    ('Incorrecto', false),
+    ('Caducado', false),
+    ('Excede limite', false);
+    
+
+INSERT INTO empresa (identificacion, razonsocial)
+VALUES
+    ('NIT-1', 'Empresa 1'),
+    ('NIT-2', 'Empresa 2'),
+    ('NIT-3', 'Empresa 3'),
+    ('NIT-4', 'Empresa 4'),
+    ('NIT-5', 'Empresa 5');
+    
+INSERT INTO numeracion (idtipodocumento, idempresa, prefijo, consecutivoinicial, consecutivofinal, vigenciainicial, vigenciafinal)
+VALUES
+    (1, 1, 'FA-A', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 1, 'ND-A', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 1, 'NC-A', 3001, 3100, '2023-01-01', '2023-12-31'),
+    (1, 1, 'FA-B', 1201, 1300, '2022-01-01', '2022-12-31'),
+    (2, 1, 'ND-B', 2201, 2300, '2022-01-01', '2022-12-31'),
+    (3, 1, 'NC-B', 3201, 3300, '2022-01-01', '2022-12-31');
+
+INSERT INTO numeracion (idtipodocumento, idempresa, prefijo, consecutivoinicial, consecutivofinal, vigenciainicial, vigenciafinal)
+VALUES
+    (1, 2, 'FA-C', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 2, 'ND-C', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 2, 'NC-C', 3001, 3100, '2023-01-01', '2023-12-31'),
+    (1, 2, 'FA-C', 1001, 1300, '2022-01-01', '2022-12-31'),
+    (2, 2, 'ND-D', 2201, 2300, '2022-01-01', '2022-12-31'),
+    (3, 2, 'NC-D', 3201, 3300, '2022-01-01', '2022-12-31');
+
+INSERT INTO numeracion (idtipodocumento, idempresa, prefijo, consecutivoinicial, consecutivofinal, vigenciainicial, vigenciafinal)
+VALUES
+    (1, 3, 'FA-E', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 3, 'ND-E', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 3, 'NC-E', 3001, 3100, '2023-01-01', '2023-12-31'),
+    (1, 3, 'FA-F', 1201, 1300, '2022-01-01', '2022-12-31'),
+    (2, 3, 'ND-F', 2201, 2300, '2022-01-01', '2022-12-31'),
+    (3, 3, 'NC-E', 3001, 3300, '2022-01-01', '2022-12-31');
+    
+
+INSERT INTO numeracion (idtipodocumento, idempresa, prefijo, consecutivoinicial, consecutivofinal, vigenciainicial, vigenciafinal)
+VALUES
+    -- Numeraciones para Empresa 4 con números repetidos
+    (1, 4, 'FA-G', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 4, 'ND-G', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 4, 'NC-G', 3001, 3100, '2023-01-01', '2023-12-31'),
+    (1, 4, 'FA-H', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 4, 'ND-H', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 4, 'NC-H', 3001, 3100, '2023-01-01', '2023-12-31');
+ 
+INSERT INTO numeracion (idtipodocumento, idempresa, prefijo, consecutivoinicial, consecutivofinal, vigenciainicial, vigenciafinal)
+VALUES
+    (1, 5, 'FA-I', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 5, 'ND-I', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 5, 'NC-I', 3001, 3100, '2023-01-01', '2023-12-31'),
+    (1, 5, 'FA-J', 1001, 1100, '2023-01-01', '2023-12-31'),
+    (2, 5, 'ND-J', 2001, 2100, '2023-01-01', '2023-12-31'),
+    (3, 5, 'NC-J', 3001, 3100, '2023-01-01', '2023-12-31');
+        
+INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos)
+VALUES
+    (1, 1, '2023-02-15', 1000.00, 190.00),
+    (2, 2, '2023-03-20', 1500.00, 285.00),
+    (3, 3, '2023-04-10', 800.00, 152.00),
+    (4, 4, '2023-05-05', 1200.00, 228.00),
+    (5, 5, '2023-06-12', 950.00, 180.50),
+    (6, 6, '2023-07-01', 2000.00, 380.00);
+
+INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos)
+VALUES
+    (7, 1, '2023-02-25', 500.00, 75.00),
+    (8, 2, '2023-03-30', 800.00, 120.00),
+    (9, 3, '2023-04-15', 300.00, 45.00),
+    (10, 4, '2023-05-20', 1000.00, 150.00),
+    (11, 5, '2023-06-25', 600.00, 90.00),
+    (12, 6, '2023-07-10', 1200.00, 180.00);
+
+INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos)
+VALUES
+    (13, 1, '2023-03-05', 200.00, 30.00),
+    (14, 2, '2023-04-10', 300.00, 45.00),
+    (15, 3, '2023-05-01', 150.00, 22.50),
+    (16, 4, '2023-06-15', 500.00, 75.00),
+    (17, 5, '2023-07-20', 250.00, 37.50),
+    (18, 6, '2023-08-05', 400.00, 60.00);
+    
+INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos)
+VALUES
+    (19, 1, '2023-02-15', 1000.00, 190.00),
+    (20, 2, '2023-03-20', 1500.00, 285.00),
+    (21, 3, '2023-04-10', 800.00, 152.00), 
+    (22, 4, '2023-05-05', 1200.00, 228.00),  
+    (23, 5, '2023-06-12', 950.00, 180.50),  
+    (24, 6, '2023-07-01', 2000.00, 380.00); 
+    
+INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos)
+VALUES
+    (25, 1, '2023-02-15', 1000.00, 190.00), 
+    (26, 4, '2023-03-20', 1500.00, 285.00), 
+    (27, 4, '2023-04-10', 800.00, 152.00),   
+    (28, 4, '2023-05-05', 1200.00, 228.00), 
+    (29, 5, '2023-06-12', 950.00, 180.50),    
+    (30, 5, '2023-07-01', 2000.00, 380.00); 
