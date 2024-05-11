@@ -1,165 +1,156 @@
-# Proyecto Backend PHP - Sistema de Gestión de Documentos Contables
+1. # Proyecto Backend PHP - Sistema de Gestión de Documentos Contables
 
-Este proyecto backend en PHP utiliza el patrón de diseño Modelo-Vista-Controlador (MVC) para gestionar documentos contables de empresas, almacenados en una base de datos PostgreSQL. Proporciona endpoints para consultas y operaciones sobre los documentos, numeraciones, estados y empresas.
+   Este proyecto backend en PHP utiliza el patrón de diseño Modelo-Vista-Controlador (MVC) para gestionar documentos contables de empresas, almacenados en una base de datos PostgreSQL. Proporciona endpoints para consultas y operaciones sobre los documentos, numeraciones, estados y empresas.
 
-## Estructura del Proyecto
+   ## Configuración
 
-El proyecto sigue una estructura de carpetas organizada de la siguiente manera:
+   ### Requisitos Previos
 
-- **`config/`**: Contiene archivos de configuración para la conexión a la base de datos y otras configuraciones relevantes.
-- **`controller/`**: Incluye controladores PHP que manejan la lógica de negocio y las interacciones con los modelos y servicios.
-- **`middleware/`**: Almacena middleware, como autenticación JWT en caso de ser necesario en el futuro.
-- **`routes/`**: Define las rutas de la aplicación y conecta las solicitudes HTTP a los controladores correspondientes.
-- **`scripts/`**: Contiene scripts SQL para inicializar la estructura de la base de datos y poblar datos iniciales.
-- **`services/`**: Contiene la lógica de los servicios PHP que interactúan con la base de datos y proporcionan datos a los controladores.
-- **`.env`**: Archivo de configuración para variables de entorno sensibles, como credenciales de la base de datos.
+   - Asegúrate de tener PHP instalado en tu sistema.
+   - PostgreSQL debe estar instalado y configurado.
 
-## Configuración
+   ### Configuración de la Base de Datos
 
-1. **Requisitos Previos**:
-   - PHP instalado en tu sistema.
-   - PostgreSQL instalado y configurado.
-2. **Configuración de la Base de Datos**:
-   - Ejecuta el script `database_schema.sql` en tu base de datos PostgreSQL para crear las tablas y poblar datos iniciales.
-3. **Configuración de la Aplicación**:
-   - Copia el archivo `.env.example` y renómbralo a `.env`. Actualiza las variables de entorno con la configuración de tu base de datos.
-4. **Ejecución**:
-   - Inicia tu servidor local PHP (por ejemplo, con `php -S localhost:8000`).
-   - Accede a las rutas definidas en `routes/index.php` para interactuar con la aplicación.
+   1. Ejecuta el script `database_schema.sql` en tu base de datos PostgreSQL para crear las tablas necesarias y poblar datos iniciales.
 
-## Uso
+   ### Configuración de la Aplicación
 
-1. Para ejecutar las consultas unicamente debes ejecutar los scriptis, de los 3 archivo que hay en la carpeta backend/script/*.sql
+   1. Copia el archivo `.env.example` y renómbralo a `.env`. Luego, actualiza las variables de entorno con la configuración de tu base de datos.
 
-   -Primero copiar y ejecutar el esquema.sql
+   ### Ejecución
 
-   -Luego copiar y ejecutar el insertarDatos.sql
+   1. Inicia tu servidor local PHP, por ejemplo, con el comando `php -S localhost:8000`.
+   2. Accede a las rutas definidas en `routes/index.php` para interactuar con la aplicación.
 
-   -Por ultimo mirar en el ultimo archivo consultas.sql donde se visualizan todas las consultas o puedes seguir con el readme donde aparece una por una
+   ## Uso
 
----
+   Para ejecutar las consultas, sigue estos pasos:
 
-Claro, aquí te presento las 7 consultas con comentarios para tu archivo README, enumeradas y explicadas:
+   1. Ejecuta los scripts SQL uno por uno ubicados en la carpeta `backend/script/`.
 
----
+      - Primero, ejecuta el script `esquema.sql`.
+      - Luego, ejecuta el script `insertarDatos.sql`.
+      - Por último, revisa el archivo `consultas.sql` para ver y ejecutar las consultas detalladas una por una.
 
-### Consulta 1: Empresas con Más Documentos Fallidos que Exitosos
+   ---
 
-Esta consulta lista las empresas que tienen más documentos fallidos que exitosos.
+   A continuación, te presento las consultas detalladas con comentarios:
 
-```sql
-SELECT e.idempresa, e.razonsocial,
-       COUNT(CASE WHEN es.exitoso THEN 1 END) AS exitosos,
-       COUNT(CASE WHEN NOT es.exitoso THEN 1 END) AS fallidos
-FROM empresa e
-INNER JOIN numeracion n ON e.idempresa = n.idempresa
-INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
-INNER JOIN estado es ON d.idestado = es.idestado
-GROUP BY e.idempresa, e.razonsocial
-HAVING COUNT(CASE WHEN NOT es.exitoso THEN 1 END) > COUNT(CASE WHEN es.exitoso THEN 1 END);
-```
+   ---
 
-### Consulta 2: Facturas, Notas Débito y Notas Crédito por Empresa entre Fechas
+   ### Consulta 1: Empresas con Más Documentos Fallidos que Exitosos
 
-Devuelve la cantidad de facturas, notas débito y notas crédito generadas por cada empresa en un rango de fechas específico.
+   Esta consulta lista las empresas que tienen más documentos fallidos que exitosos.
 
-```sql
-SELECT e.razonsocial,
-       SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
-       SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
-       SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-FROM empresa e
-LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-WHERE d.fecha BETWEEN 'fecha_inicio' AND 'fecha_fin'
-GROUP BY e.razonsocial;
-```
+   ```sql
+   SELECT e.idempresa, e.razonsocial,
+          COUNT(CASE WHEN es.exitoso THEN 1 END) AS exitosos,
+          COUNT(CASE WHEN NOT es.exitoso THEN 1 END) AS fallidos
+   FROM empresa e
+   INNER JOIN numeracion n ON e.idempresa = n.idempresa
+   INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+   INNER JOIN estado es ON d.idestado = es.idestado
+   GROUP BY e.idempresa, e.razonsocial
+   HAVING COUNT(CASE WHEN NOT es.exitoso THEN 1 END) > COUNT(CASE WHEN es.exitoso THEN 1 END);
+   ```
 
-### Consulta 3: Cantidad de Documentos por Estado y Empresa
+   ### Consulta 2: Facturas, Notas Débito y Notas Crédito por Empresa entre Fechas
 
-Lista la cantidad de documentos en cada estado para cada empresa.
+   Devuelve la cantidad de facturas, notas débito y notas crédito generadas por cada empresa en un rango de fechas específico.
 
-```sql
-SELECT e.razonsocial, es.description AS estado,
-       COUNT(*) AS cantidad_documentos
-FROM empresa e
-LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-LEFT JOIN estado es ON d.idestado = es.idestado
-GROUP BY e.razonsocial, es.description;
-```
+   ```sql
+   SELECT e.razonsocial,
+          SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
+          SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
+          SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
+   FROM empresa e
+   LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+   LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+   LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+   WHERE d.fecha BETWEEN 'fecha_inicio' AND 'fecha_fin'
+   GROUP BY e.razonsocial;
+   ```
 
-### Consulta 4: Empresas con Más de 3 Documentos No Exitosos
+   ### Consulta 3: Cantidad de Documentos por Estado y Empresa
 
-Identifica las empresas que tienen más de 3 documentos en estados no exitosos.
+   Lista la cantidad de documentos en cada estado para cada empresa.
 
-```sql
-SELECT e.razonsocial
-FROM empresa e
-LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-LEFT JOIN estado es ON d.idestado = es.idestado
-WHERE NOT es.exitoso
-GROUP BY e.razonsocial
-HAVING COUNT(*) > 3;
-```
+   ```sql
+   SELECT e.razonsocial, es.description AS estado,
+          COUNT(*) AS cantidad_documentos
+   FROM empresa e
+   LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+   LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+   LEFT JOIN estado es ON d.idestado = es.idestado
+   GROUP BY e.razonsocial, es.description;
+   ```
 
-### Consulta 5: Documentos con Número o Fecha Fuera del Rango Permitido por la DIAN
+   ### Consulta 4: Empresas con Más de 3 Documentos No Exitosos
 
-Muestra la cantidad de documentos por empresa que tienen números o fechas fuera del rango permitido por la DIAN.
+   Identifica las empresas que tienen más de 3 documentos en estados no exitosos.
 
-```sql
-SELECT e.razonsocial,
-       SUM(CASE WHEN d.fecha NOT BETWEEN n.vigenciainicial AND n.vigenciafinal THEN 1 ELSE 0 END) AS cantidad_fecha_fuera_rango,
-       SUM(CASE WHEN d.idnumeracion IS NULL OR d.idnumeracion NOT BETWEEN n.consecutivoinicial AND n.consecutivofinal THEN 1 ELSE 0 END) AS cantidad_numero_fuera_rango
-FROM empresa e
-LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-GROUP BY e.razonsocial;
-```
+   ```sql
+   SELECT e.razonsocial
+   FROM empresa e
+   LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+   LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+   LEFT JOIN estado es ON d.idestado = es.idestado
+   WHERE NOT es.exitoso
+   GROUP BY e.razonsocial
+   HAVING COUNT(*) > 3;
+   ```
 
-### Consulta 6: Total de Dinero Recibido por Facturas por Empresa
+   ### Consulta 5: Documentos con Número o Fecha Fuera del Rango Permitido por la DIAN
 
-Calcula el total de dinero recibido (base + impuestos) solo para facturas por cada empresa.
+   Muestra la cantidad de documentos por empresa que tienen números o fechas fuera del rango permitido por la DIAN.
 
-```sql
-SELECT e.razonsocial,
-       SUM(d.base + d.impuestos) AS total_dinero_recibido
-FROM empresa e
-LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-WHERE td.description = 'Factura'
-GROUP BY e.razonsocial;
-```
+   ```sql
+   SELECT e.razonsocial,
+          SUM(CASE WHEN d.fecha NOT BETWEEN n.vigenciainicial AND n.vigenciafinal THEN 1 ELSE 0 END) AS cantidad_fecha_fuera_rango,
+          SUM(CASE WHEN d.idnumeracion IS NULL OR d.idnumeracion NOT BETWEEN n.consecutivoinicial AND n.consecutivofinal THEN 1 ELSE 0 END) AS cantidad_numero_fuera_rango
+   FROM empresa e
+   LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+   LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+   GROUP BY e.razonsocial;
+   ```
 
-### Consulta 7: Identificar Números Completos Repetidos
+   ### Consulta 6: Total de Dinero Recibido por Facturas por Empresa
 
-Busca números completos duplicados en la base de datos y cuenta sus repeticiones.
+   Calcula el total de dinero recibido (base + impuestos) solo para facturas por cada empresa.
 
-```sql
-SELECT prefijo || CAST(n.idnumeracion AS VARCHAR) AS numero_completo,
-       COUNT(*) AS cantidad_repeticiones
-FROM numeracion n
-GROUP BY numero_completo
-HAVING COUNT(*) > 1;
-```
+   ```sql
+   SELECT e.razonsocial,
+          SUM(d.base + d.impuestos) AS total_dinero_recibido
+   FROM empresa e
+   LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+   LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+   LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+   WHERE td.description = 'Factura'
+   GROUP BY e.razonsocial;
+   ```
 
----
+   ### Consulta 7: Identificar Números Completos Repetidos
 
-Para ejecutar estas consultas, simplemente copia y pega el código SQL en tu entorno de gestión de bases de datos PostgreSQL.
+   Busca números completos duplicados en la base de datos y cuenta sus repeticiones.
 
-## Interfaz
+   ```sql
+   SELECT prefijo || CAST(n.idnumeracion AS VARCHAR) AS numero_completo,
+          COUNT(*) AS cantidad_repeticiones
+   FROM numeracion n
+   GROUP BY numero_completo
+   HAVING COUNT(*) > 1;
+   ```
 
-1. ngresa por teminal a la carpeta del proyecto
+   ---
 
-2. Usa el siguiente comando para inicializar el frontend `npm run start` 
+   Para ejecutar estas consultas, simplemente copia y pega el código SQL en tu entorno de gestión de bases de datos PostgreSQL.
 
-3. Iniciar con Apache o levantar el api del backend.
+   ## Interfaz
 
-4. Usar los endpoints creados en la pagina de Dashboard.
+   1. Accede a la carpeta del proyecto desde tu terminal.
+   2. Utiliza el siguiente comando para iniciar el frontend: `npm run start`.
+   3. Inicia el servidor Apache o levanta la API del backend.
+   4. Utiliza los endpoints creados en la página de Dashboard.
+   5. Para utilizar cada endpoint, haz clic en "Ver detalles" y completa los datos correspondientes en la interfaz.
 
-5. Para usar cada endpotn usa el ver detalles y llenar los datos que correspondan
-
-   ![](/home/uwuntu/.config/Typora/typora-user-images/image-20240511112135915.png)
+   ![](frontend/src/assets/img/Dashboard)
