@@ -11,11 +11,11 @@
 
 		define('DRIVER', 'pgsql');
 		define('HOST', 'localhost');
-		define('PORT', '5051');
+		define('PORT', '5052');
 		define('DB', 'contabilidad_diario');
 		define('USER', 'postgres');
 		define('PASS', '12345678');
-		define('CHARSET', 'utf8');
+		define('CHARSET', 'utf8mb4');
 
 		
 
