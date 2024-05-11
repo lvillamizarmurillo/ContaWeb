@@ -24,3 +24,29 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('myFormEndpoint1');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+
+        // Recopilar los datos del formulario
+        const formData = new FormData(form);
+
+        // Enviar los datos utilizando AJAX
+        fetch('url_del_servidor', {
+            method: 'POST', // Método HTTP (puede ser POST, GET, etc.)
+            body: formData // Datos del formulario
+        })
+        .then(response => response.json()) // Convertir la respuesta a JSON
+        .then(data => {
+            // Manejar la respuesta del servidor
+            console.log('Respuesta del servidor:', data);
+            // Puedes actualizar la interfaz aquí si es necesario
+        })
+        .catch(error => {
+            console.error('Error al enviar el formulario:', error);
+        });
+    });
+});
