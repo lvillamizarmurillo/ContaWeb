@@ -34,6 +34,7 @@ class EmpresaModel
     {
         $this->dateEnd = $dateEnd;
     }
+    
 
     // Método para obtener datos de documentos fallidos y exitosos por empresa
     public function getDocumentsFailedData()
@@ -175,7 +176,7 @@ class EmpresaModel
         }
     }
     
-    public function numberCompleteRepeatedData()
+    public function getnumberCompleteRepeatedData()
     {
         try {
             // Consulta SQL
@@ -203,20 +204,20 @@ class EmpresaModel
     
     
     // Método para obtener datos de documentos en un rango de fechas específico por empresa
-    public function getDocumentsInDateEspecificData()
+    public function postsaveNewDocumentData()
     {
         try {
             // Consulta SQL utilizando las fechas almacenadas en las propiedades
             $sql = "SELECT e.razonsocial,
-                        SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
-                        SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
-                        SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-                    FROM empresa e
-                    LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                    LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                    LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                    WHERE d.fecha BETWEEN :start_date AND :end_date
-                    GROUP BY e.razonsocial";
+                    SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
+                    SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
+                    SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
+                FROM empresa e
+                LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+                LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                WHERE d.fecha BETWEEN :start_date AND :end_date
+                GROUP BY e.razonsocial";
 
             // Preparar y ejecutar la consulta con parámetros
             $exe = $this->connect->prepare($sql);
@@ -226,8 +227,9 @@ class EmpresaModel
 
             // Obtener los resultados como un array de objetos
             $result = $exe->fetchAll(PDO::FETCH_OBJ);
-            echo $result;
-            return $result; // Devolver resultados
+
+            // Devolver resultados
+            return $result;// Devolver resultados
         } catch (PDOException $e) {
             // Manejo de errores
             echo "Error al ejecutar la consulta: " . $e->getMessage();

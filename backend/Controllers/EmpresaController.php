@@ -66,7 +66,17 @@ class EmpresaController extends EmpresaModel
 		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
 		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
 
-		$obj_users = EmpresaModel::numberCompleteRepeatedData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		$obj_users = EmpresaModel::getnumberCompleteRepeatedData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
+		var_dump($obj_users);
+
+	}
+
+        
+        public function postsaveNewDocument(){//v1
+		//objeto de datos que retornemos del modelo para meter en la vista. ej $obj=$this->methodShow();
+		//se guarda en una variable que llamaremos en la vista cuando recorramos sus datos.
+
+		$obj_users = EmpresaModel::postsaveNewDocumentData();	//atención con el self que toma esta clase y no la padre, en caso de que exista ese mismo método aquí se sobreescribe!		
 		var_dump($obj_users);
 
 	}

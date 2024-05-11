@@ -17,7 +17,7 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
+            <a class="navbar-brand ps-3" href="index.html">ContaWeb</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         </nav>
@@ -42,11 +42,11 @@
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                         <div class="row">
-                            <div class="col-xl-3 col-md-6 row align-items-center">
-                                <div class="card bg-primary mx-auto text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
+                            <div class="col-xl-3 col-md-6 ">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body mx-auto">Listar empresas</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
+                                        <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
                                         <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -58,6 +58,114 @@
                                                   <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Buscar</button>
+                                              </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body mx-auto">Registrar Documento</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <button type="button" class="btn btn-success mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint2">View Details</button>
+                                        <div class="modal fade" id="enpoint2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header mx-auto">
+                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint2">
+                                                <div class="mb-3 position-relative">
+                                                  <label for="empresa" class="text-black">Empresa:</label>
+                                                  <select class="form-select" aria-label="Default select example" name="empresa" id="empresa">
+                                                    <option selected>Selecciona una</option>
+                                                    <option value="1">empresa1</option>
+                                                    <option value="2">empresa2</option>
+                                                    <option value="3">empresa3</option>
+                                                    <option value="4">empresa4</option>
+                                                    <option value="5">empresa5</option>
+                                                  </select>
+                                                  <label for="empresa" class="text-black">Numeracion</label>
+                                                  <select class="form-select" aria-label="Default select example" name="numeracion" id="numeracion">
+                                                    <option selected>Selecciona una</option>
+                                                    <option value="1">FA (Factura)</option>
+                                                    <option value="2">ND (Nota Débito)</option>
+                                                    <option value="3">NC (Nota Crédito)</option>
+                                                  </select>
+                                                  <label for="empresa" class="text-black">TipoDocumento</label>
+                                                  <select class="form-select" aria-label="Default select example" name="tipoDocumento" id="tipoDocumento">
+                                                    <option selected>Selecciona una</option>
+                                                    <option value="1">Factura</option>
+                                                    <option value="3">Nota Débito</option>
+                                                    <option value="3">Nota Crédito</option>
+                                                  </select>
+                                                  <label for="fecha" class="text-black">Fecha:</label>
+                                                  <input type="date" id="fecha" class="form-control">
+                                                  <label for="base" class="text-black">Base:</label>
+                                                  <input type="number" class="form-control" step="0.01" name="base" id="base" aria-describedby="base">
+                                                  <label for="base" class="text-black">Impuestos:</label>
+                                                  <input type="number" class="form-control" step="0.01" name="impuestos" id="impuestos" aria-describedby="impuestos">
+                                                  <div id="text" class="form-text text-black" >Cree un document de empresa.</div>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Crear Documento</button>
+                                              </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body mx-auto">Actualizar documento</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <button type="button" class="btn btn-warning mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
+                                        <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header mx-auto">
+                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint1">
+                                                <div class="mb-3 position-relative">
+                                                  <label for="exampleInputEmail1" class="form-label text-black ">Numeracion de Empresa</label>
+                                                  <input type="text" class="form-control" id="InputNumeracion" aria-describedby="emailHelp">
+                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Buscar</button>
+                                              </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body mx-auto">Eliminar documento</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <button type="button" class="btn btn-danger mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">View Details</button>
+                                        <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header mx-auto">
+                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint1">
+                                                <div class="mb-3 position-relative">
+                                                  <label for="exampleInputEmail1" class="form-label text-black ">Numeracion de Empresa</label>
+                                                  <input type="text" class="form-control" id="InputNumeracion" aria-describedby="emailHelp">
+                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger">Buscar</button>
                                               </form>
                                             </div>
                                             <div class="modal-footer">

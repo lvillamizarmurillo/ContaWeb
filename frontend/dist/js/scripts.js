@@ -25,28 +25,82 @@ window.addEventListener('DOMContentLoaded', event => {
 
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('myFormEndpoint1');
+ $(document).ready(function() {
+    // Cargar opciones de empresas
+    $.ajax({
+        url: 'obtener_empresas.php',
+        method: 'GET',
+        success: function(data) {
+            var empresas = JSON.parse(data);
+            empresas.forEach(function(empresa) {
+                $('#empresa').append($('<option>', {
+                    value: empresa.idempresa,
+                    text: empresa.identificacion + ' - ' + empresa.razonsocial
+                }));
+            });
+        },
+        error: function() {
+            console.log('Error al cargar empresas.');
+        }
+    });
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+    // Manejar cambio de empresa para cargar numeraciones correspondientes
+    $('#empresa').change(function() {
+        var idEmpresa = $(this).val();
 
-        // Recopilar los datos del formulario
-        const formData = new FormData(form);
+        // Cargar opciones de numeración según la empresa seleccionada
+        $.ajax({
+            url: 'obtener_numeraciones.php?idEmpresa=' + idEmpresa,
+            method: 'GET',
+            success: function(data) {
+                var numeraciones = JSON.parse(data);
+                $('#numeracion').empty(); // Limpiar opciones anteriores
+                numeraciones.forEach(function(numeracion) {
+                    $('#numeracion').append($('<option>', {
+                        value: numeracion.idnumeracion,
+                        text: numeracion.prefijo + ' (' + numeracion.description + ')'
+                    }));
+                });
+            },
+            error: function() {
+                console.log('Error al cargar numeraciones.');
+            }
+        });
+    });
 
-        // Enviar los datos utilizando AJAX
-        fetch('url_del_servidor', {
-            method: 'POST', // Método HTTP (puede ser POST, GET, etc.)
-            body: formData // Datos del formulario
-        })
-        .then(response => response.json()) // Convertir la respuesta a JSON
-        .then(data => {
-            // Manejar la respuesta del servidor
-            console.log('Respuesta del servidor:', data);
-            // Puedes actualizar la interfaz aquí si es necesario
-        })
-        .catch(error => {
-            console.error('Error al enviar el formulario:', error);
+    // Manejar envío del formulario
+    $('#documentoForm').submit(function(e) {
+        e.preventDefault();
+
+        var formData = {
+            idnumeracion: $('#numeracion').val(),
+            idtipoDocumento: $('#tipoDocumento').val(),
+            fecha: $('#fecha').val(),
+            base: $('#base').val(),
+            impuestos: $('#impuestos').val()
+        };
+
+        // Validaciones del lado del cliente (puedes agregar más según necesites)
+        if (formData.base <= 0) {
+            $('#message').html('<p>El valor base del documento debe ser mayor que cero.</p>');
+            return;
+        }
+        if (formData.impuestos < 0 || formData.impuestos >= formData.base) {
+            $('#message').html('<p>El valor de impuestos debe ser menor que la base y mayor o igual a cero.</p>');
+            return;
+        }
+
+        // Validaciones adicionales y envío de datos al servidor
+        $.ajax({
+            url: 'guardar_documento.php',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                $('#message').html('<p>Documento guardado correctamente.</p>');
+            },
+            error: function() {
+                $('#message').html('<p>Error al guardar documento.</p>');
+            }
         });
     });
 });

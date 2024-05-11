@@ -9,8 +9,8 @@ use NexusRouter\Core\Router;
     Router::get('/document-failed-more-than-three', 'Controllers/EmpresaController', "getdocumentsFailedMoreThanThreeData");
     Router::get('/document-out-range', 'Controllers/EmpresaController', "documentsOutOfRangeData");
     Router::get('/document-out-range', 'Controllers/EmpresaController', "getdocumentstotalInvoiceData");
-    Router::get('/number-complete-repeated', 'Controllers/EmpresaController', "numberCompleteRepeatedData");
-
+    Router::get('/number-complete-repeated', 'Controllers/EmpresaController', "getnumberCompleteRepeatedData");
+    Router::post('/save-new-document', 'Controllers/EmpresaController', "postsaveNewDocumentData");
 
 
 
