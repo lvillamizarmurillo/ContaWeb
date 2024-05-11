@@ -3,6 +3,31 @@ namespace NexusRouter;
 
 use NexusRouter\Core\Router;
 
+     Router::get('/document-failed', 'Controllers/EmpresaController', "getDocumentsFailedData");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # PATH EXAMPLES #
 // Simple route
 Router::get('/users' , 'Controllers/User');

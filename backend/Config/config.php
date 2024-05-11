@@ -7,15 +7,15 @@
 
 		#url para poder acceder desde la raiz a las carpetas,
 		#sin tener que estar navegando por los niveles.
-		define('URL_ROOT', 'http://localhost/projects/%5b1%5d%20Interacpedia/15474_vanilla/v1/');
+		define('URL_ROOT', 'http://localhost:8000/ContaWeb/backend/');
 
-		define('DRIVER', 'mysql');
+		define('DRIVER', 'pgsql');
 		define('HOST', 'localhost');
-		define('PORT', '3306');
-		define('DB', 'db_15474');
-		define('USER', 'root');
-		define('PASS', '');
-		define('CHARSET', 'utf8mb4');
+		define('PORT', '5051');
+		define('DB', 'contabilidad_diario');
+		define('USER', 'postgres');
+		define('PASS', '12345678');
+		define('CHARSET', 'utf8');
 
 		
 
