@@ -153,4 +153,19 @@
    4. Utiliza los endpoints creados en la página de Dashboard.
    5. Para utilizar cada endpoint, haz clic en "Ver detalles" y completa los datos correspondientes en la interfaz.
 
-   ![](frontend/src/assets/img/Dashboard)
+
+## Interfaz Get
+
+![](frontend/src/assets/img/Dashboard)
+
+## Interfaz Post
+
+-![](frontend/src/assets/img/iterfazPost)
+
+## Interfaz Put
+
+-![](frontend/src/assets/img/iterfazPut)
+
+## Interfaz Delete
+
+-![](frontend/src/assets/img/iterfazDelete)
