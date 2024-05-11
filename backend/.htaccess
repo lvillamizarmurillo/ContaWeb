@@ -1,6 +1,5 @@
 RewriteEngine On
-RewriteCond %{REQUEST_URI}  !(\.png|\.jpg|\.webp|\.gif|\.jpeg|\.zip|\.css|\.svg|\.js|\.pdf)$
-RewriteRule (.*) index.php [QSA,L]
-php_flag log_errors on
-php_value error_reporting 32767
-php_value error_log "error_log.txt"
+RewriteBase /ContaWeb/api/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

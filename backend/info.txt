@@ -1,0 +1,27 @@
+
+curl -X GET http://localhost/miproyecto/api/empresas
+
+curl -X GET http://localhost/miproyecto/api/empresas/1
+
+curl -X POST http://localhost/miproyecto/api/empresas \
+-H 'Content-Type: application/json' \
+-d '{"nombre": "Nueva Empresa", "direccion": "Calle Falsa 123"}'
+
+curl -X PUT http://localhost/miproyecto/api/empresas/1 \
+-H 'Content-Type: application/json' \
+-d '{"nombre": "Empresa Actualizada", "direccion": "Nueva Direccion 456"}'
+
+curl -X PUT http://localhost/miproyecto/api/empresas/1 \
+-H 'Content-Type: application/json' \
+-d '{"nombre": "Empresa Actualizada", "direccion": "Nueva Direccion 456"}'
+
+curl -X DELETE http://localhost/miproyecto/api/empresas/1
+
+
+
+
+
+
+
+
+
