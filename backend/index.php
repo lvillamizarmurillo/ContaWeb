@@ -2,7 +2,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-
+// var_dump( phpinfo() ); mucha uueba este es el proyecto del xampp, ahora estamos en el triple doubleu hp doubleu xd
 require __DIR__ . '/vendor/autoload.php';
 
 $app = AppFactory::create();
@@ -27,7 +27,7 @@ $database = new Database();
 $db = $database->getConnection();
 $empresaController = new EmpresaController($db);
 
-$urlBase = '/ContaWeb/api';
+$urlBase = '/ContaWeb/backend';
 
 // define las rutas papu
 $app->get($urlBase . '/empresas', [$empresaController, 'read']);
@@ -38,6 +38,7 @@ $app->get($urlBase . '/empresas', [$empresaController, 'read']);
 
 $app->get($urlBase . '/documentsFailedData', [$empresaController, 'getDocumentsFailedData']);
 $app->get($urlBase . '/documents/from-each-company', [$empresaController, 'getDocumentsFromEachCompanyData']);
+$app->get($urlBase . '/documents/for-range-date', [$empresaController, 'getDocumentsForRangeOfDateData']);
 $app->get($urlBase . '/documents/failed/more-than-three', [$empresaController, 'getDocumentsFailedMoreThanThreeData']);
 $app->get($urlBase . '/documents/out-of-range', [$empresaController, 'getDocumentsOutOfRangeData']);
 $app->get($urlBase . '/documents/total-invoice', [$empresaController, 'getDocumentstotalInvoiceData']);

@@ -127,6 +127,28 @@ class EmpresaModel {
             return [];
         }
     }
+    
+    public function getDocumentsForRangeOfDateDataDinmic() {
+        try {
+            $sql = "SELECT e.razonsocial,
+                        SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
+                        SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
+                        SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
+                 FROM empresa e
+                 LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+                 LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+                 LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                 WHERE d.fecha BETWEEN '2023-01-01' AND '2023-12-31'
+                 GROUP BY e.razonsocial";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt;
+        } catch (PDOException $e) {
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return [];
+        }
+    }
+
 
 
     public function getDocumentsFailedMoreThanThreeData()

@@ -20,7 +20,14 @@ curl -X DELETE http://localhost/miproyecto/api/empresas/1
 
 
 
+mk le recomienDo reabrir el proyecto para evitar confusiones con el anterior que sta en el xampp, 
+op si quiere usA el xampp, Solo toca bajarse la 8.2 que esta en la pagina oficIal q ud tiene es la 8.1^C
 
+
+debio ser solo la version, de resto el apache del xampp tiene las librerias de php, o por si acaso es en el .conf de apache
+sudo nano /etc/apache2/apache2.conf
+
+pero del xampp, habilitarle el rewrite
 
 
 

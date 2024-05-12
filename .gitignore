@@ -10,7 +10,6 @@ logs/
 temp/
 
 *.log
-*.json
 *.sqlite
 *.sqlite3
 .DS_Store

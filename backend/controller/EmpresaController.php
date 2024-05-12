@@ -116,6 +116,7 @@ class EmpresaController {
     ### ENDPOINTS ###
 
     public function getDocumentsFailedData(Request $request, Response $response) {
+        die;
         $result = $this->empresaModel->getDocumentsFailedData();
         $num = $result->rowCount();
 
@@ -138,6 +139,33 @@ class EmpresaController {
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         } else {
             $response->getBody()->write(json_encode(array("message" => "No se encontraron empresas.")));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+    }
+    
+    public function getDocumentsForRangeOfDateData(Request $request, Response $response) {
+        var_dump('hola');
+        $result = $this->empresaModel->getDocumentsForRangeOfDateData();
+        $num = $result->rowCount();
+
+        if ($num > 0) {
+            $empresas_arr = array();
+            $empresas_arr["resultados"] = array();
+
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                $empresa_item = array(
+                    "razonsocial" => $razonsocial,
+                    "cantidadFacturas" => $cantidadFacturas,
+                    "cantidad_notas_debito" => $cantidad_notas_debito,
+                    "cantidad_notas_credito" => $cantidad_notas_credito
+                );
+                array_push($empresas_arr["resultados"], $empresa_item);
+            }
+            $response->getBody()->write(json_encode($empresas_arr));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } else {
+            $response->getBody()->write(json_encode(array("message" => "No se encontraron datos.")));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
         }
     }
