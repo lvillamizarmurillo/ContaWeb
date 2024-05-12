@@ -2,103 +2,57 @@
 // Scripts
 // 
 
-window.addEventListener('DOMContentLoaded', event => {
-
-    // Toggle the side navigation
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
-        sidebarToggle.addEventListener('click', event => {
-            event.preventDefault();
-            document.body.classList.toggle('sb-sidenav-toggled');
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+$(document).ready(function() {
+    // Función para cargar opciones de empresas mediante AJAX
+    function cargarEmpresas() {
+        $.ajax({
+            url: 'http://localhost/ContaWeb/backend/documentsFailedData',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log('Datos de empresas recibidos:');
+                console.log(data);
+                // Aquí puedes procesar los datos recibidos como desees
+            },
+            error: function() {
+                console.log('Error al cargar empresas.');
+            }
         });
     }
-
-});
-
- $(document).ready(function() {
-    // Cargar opciones de empresas
-    $.ajax({
-        url: 'obtener_empresas.php',
-        method: 'GET',
-        success: function(data) {
-            var empresas = JSON.parse(data);
-            empresas.forEach(function(empresa) {
-                $('#empresa').append($('<option>', {
-                    value: empresa.idempresa,
-                    text: empresa.identificacion + ' - ' + empresa.razonsocial
-                }));
-            });
-        },
-        error: function() {
-            console.log('Error al cargar empresas.');
-        }
-    });
-
-    // Manejar cambio de empresa para cargar numeraciones correspondientes
-    $('#empresa').change(function() {
-        var idEmpresa = $(this).val();
-
-        // Cargar opciones de numeración según la empresa seleccionada
+    function cargarDocumento() {
+        var numDocument = $('#InputNumeracion').val();
         $.ajax({
-            url: 'obtener_numeraciones.php?idEmpresa=' + idEmpresa,
-            method: 'GET',
+            url: 'http://localhost/ContaWeb/backend/document/numDocument',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                numDocument: numDocument
+            },
             success: function(data) {
-                var numeraciones = JSON.parse(data);
-                $('#numeracion').empty(); // Limpiar opciones anteriores
-                numeraciones.forEach(function(numeracion) {
-                    $('#numeracion').append($('<option>', {
-                        value: numeracion.idnumeracion,
-                        text: numeracion.prefijo + ' (' + numeracion.description + ')'
-                    }));
-                });
+                console.log('Datos de empresas recibidos:');
+                console.log(data);
+                // Aquí puedes procesar los datos recibidos como desees
             },
             error: function() {
-                console.log('Error al cargar numeraciones.');
+                console.log('Error al cargar empresas.');
             }
         });
-    });
+    }
+    
+
+
+    // Llamar a la función para cargar empresas al cargar la página
+    cargarEmpresas();
 
     // Manejar envío del formulario
-    $('#documentoForm').submit(function(e) {
+    $('#myFormEndpoint1').submit(function(e) {
         e.preventDefault();
-
-        var formData = {
-            idnumeracion: $('#numeracion').val(),
-            idtipoDocumento: $('#tipoDocumento').val(),
-            fecha: $('#fecha').val(),
-            base: $('#base').val(),
-            impuestos: $('#impuestos').val()
-        };
-
-        // Validaciones del lado del cliente (puedes agregar más según necesites)
-        if (formData.base <= 0) {
-            $('#message').html('<p>El valor base del documento debe ser mayor que cero.</p>');
-            return;
-        }
-        if (formData.impuestos < 0 || formData.impuestos >= formData.base) {
-            $('#message').html('<p>El valor de impuestos debe ser menor que la base y mayor o igual a cero.</p>');
-            return;
-        }
-
-        // Validaciones adicionales y envío de datos al servidor
-        $.ajax({
-            url: 'guardar_documento.php',
-            method: 'POST',
-            data: formData,
-            success: function(response) {
-                $('#message').html('<p>Documento guardado correctamente.</p>');
-            },
-            error: function() {
-                $('#message').html('<p>Error al guardar documento.</p>');
-            }
-        });
+        cargarDocumento();
+        // Puedes agregar lógica adicional aquí si es necesario para el formulario
     });
 });
+
+
 
 $(document).ready(function() {
     $('#updateDocumentoForm').submit(function(e) {

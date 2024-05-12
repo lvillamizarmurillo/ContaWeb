@@ -116,7 +116,6 @@ class EmpresaController {
     ### ENDPOINTS ###
 
     public function getDocumentsFailedData(Request $request, Response $response) {
-        die;
         $result = $this->empresaModel->getDocumentsFailedData();
         $num = $result->rowCount();
 
@@ -143,20 +142,19 @@ class EmpresaController {
         }
     }
     
-    public function getDocumentsForRangeOfDateData(Request $request, Response $response) {
-        var_dump('hola');
-        $result = $this->empresaModel->getDocumentsForRangeOfDateData();
+    public function getDocumentsForDateRangeData(Request $request, Response $response, array $args) {
+        $dateStart = $args['dateStart'];
+        $dateEnd = $args['dateEnd'];
+        $result = $this->empresaModel->getDocumentsForDateRangeData($dateStart,$dateEnd);
         $num = $result->rowCount();
-
         if ($num > 0) {
             $empresas_arr = array();
             $empresas_arr["resultados"] = array();
-
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
                 $empresa_item = array(
                     "razonsocial" => $razonsocial,
-                    "cantidadFacturas" => $cantidadFacturas,
+                    "cantidad_facturas" => $cantidad_facturas,
                     "cantidad_notas_debito" => $cantidad_notas_debito,
                     "cantidad_notas_credito" => $cantidad_notas_credito
                 );
@@ -165,7 +163,7 @@ class EmpresaController {
             $response->getBody()->write(json_encode($empresas_arr));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         } else {
-            $response->getBody()->write(json_encode(array("message" => "No se encontraron datos.")));
+            $response->getBody()->write(json_encode(array("message" => "Empresa no encontrada.")));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
         }
     }
@@ -288,6 +286,31 @@ class EmpresaController {
                     "idempresa" => $idempresa,
                     "numerocompleto" => $numerocompleto,
                     "repeticiones" => $repeticiones
+                );
+                array_push($numeros_arr["resultados"], $numero_item);
+            }
+            $response->getBody()->write(json_encode($numeros_arr));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } else {
+            $response->getBody()->write(json_encode(array("message" => "No se encontraron números completos repetidos.")));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+    }
+    
+    public function postSearchDocumentData(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        $result = $this->empresaModel->postSearchDocumentData($data['numDocument']);
+        $num = $result->rowCount();
+
+        if ($num > 0) {
+            $numeros_arr = array();
+            $numeros_arr["resultados"] = array();
+
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                $numero_item = array(
+                    "empresa" => $empresa,
+                    "tipo_documento" => $tipo_documento,
                 );
                 array_push($numeros_arr["resultados"], $numero_item);
             }

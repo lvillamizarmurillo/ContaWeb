@@ -3,6 +3,8 @@
 .idea/
 .vscode/
 
+
+README.md
 node_modules/
 vendor/
 
@@ -24,3 +26,4 @@ temp/
 /build/
 /dist/
 /coverage/
+/backend/nbproject/private/

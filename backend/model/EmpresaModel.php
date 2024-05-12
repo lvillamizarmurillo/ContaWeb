@@ -128,18 +128,19 @@ class EmpresaModel {
         }
     }
     
-    public function getDocumentsForRangeOfDateDataDinmic() {
+    
+    public function getDocumentsForDateRangeData($dateStart,$dateEnd) {
         try {
             $sql = "SELECT e.razonsocial,
                         SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
                         SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
                         SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-                 FROM empresa e
-                 LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                 LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                 LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                 WHERE d.fecha BETWEEN '2023-01-01' AND '2023-12-31'
-                 GROUP BY e.razonsocial";
+                FROM empresa e
+                LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+                LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                WHERE d.fecha BETWEEN '".$dateStart."' AND '".$dateEnd."'
+                GROUP BY e.razonsocial";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt;
@@ -269,150 +270,25 @@ class EmpresaModel {
     }
 
 
-
-    // Método para actualizar una empresa existente
-    public function updateEmpresa($id, $identificacion, $razonsocial) {
-        $sql = "UPDATE empresa SET identificacion = :identificacion, razonsocial = :razonsocial WHERE idempresa = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':identificacion', $identificacion);
-        $stmt->bindParam(':razonsocial', $razonsocial);
-        return $stmt->execute();
-    }
-
-
-
-    // ================ ESTO EMPIEZA PAILAS TOCA REVISAR
-    // Método para obtener datos de documentos en un rango de fechas específico por empresa
-    public function postSaveNewDocumentData()
+    public function postSearchDocumentData($numDomuent)
     {
         try {
-            $idnumeracion = $_POST['idnumeracion'];
-            $fecha = $_POST['fecha'];
-            $base = $_POST['base'];
-            $impuestos = $_POST['impuestos'];
+            $sql = "SELECT e.razonsocial AS empresa, td.description AS tipo_documento
+                    FROM numeracion n
+                    INNER JOIN empresa e ON n.idempresa = e.idempresa
+                    INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                    WHERE n.idnumeracion = '".$numDomuent."'";
 
-            // Validaciones adicionales (puedes implementar aquí)
-
-            // Insertar un nuevo documento en la base de datos
-            $sqlInsert = "INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos) 
-                          VALUES (:idnumeracion, 1, :fecha, :base, :impuestos)";
-
-            $stmtInsert = $this->conn->prepare($sqlInsert);
-            $stmtInsert->bindParam(':idnumeracion', $idnumeracion);
-            $stmtInsert->bindParam(':fecha', $fecha);
-            $stmtInsert->bindParam(':base', $base);
-            $stmtInsert->bindParam(':impuestos', $impuestos);
-            $stmtInsert->execute();
-
-
-
-
-            // Consulta SQL para obtener estadísticas actualizadas
-            $sqlStatistics = "SELECT e.razonsocial,
-                    SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
-                    SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
-                    SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-                FROM empresa e
-                LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                WHERE d.fecha BETWEEN :start_date AND :end_date
-                GROUP BY e.razonsocial";
-
-            // Preparar y ejecutar la consulta para obtener estadísticas actualizadas
-            $stmtStatistics = $this->conn->prepare($sqlStatistics);
-            $stmtStatistics->bindParam(':start_date', $this->dateStart);
-            $stmtStatistics->bindParam(':end_date', $this->dateEnd);
-            $stmtStatistics->execute();
+            // Preparar y ejecutar la consulta
+            $exe = $this->conn->prepare($sql);
+            $exe->execute();
 
             // Obtener los resultados como un array de objetos
-            $result = $stmtStatistics->fetchAll(PDO::FETCH_OBJ);
-
-            // Devolver los resultados
-            return $result;
+            return $exe; // Devolver resultados
         } catch (PDOException $e) {
             // Manejo de errores
             echo "Error al ejecutar la consulta: " . $e->getMessage();
             return []; // Devolver un array vacío o manejar el error según sea necesario
-        }
-    }
-    public function putSaveDocumentIdData(){
-        try {
-            // Obtener los datos del formulario o de la solicitud (supongamos que están en $_POST)
-            $idnumeracion = $_POST['idnumeracion'];
-            $fecha = $_POST['fecha'];
-            $base = $_POST['base'];
-            $impuestos = $_POST['impuestos'];
-
-            // Validaciones adicionales (puedes implementar aquí)
-
-            // Insertar un nuevo documento en la base de datos
-            $sqlInsert = "INSERT INTO documento (idnumeracion, idestado, fecha, base, impuestos) 
-                          VALUES (:idnumeracion, 1, :fecha, :base, :impuestos)";
-
-            $stmtInsert = $this->conn->prepare($sqlInsert);
-            $stmtInsert->bindParam(':idnumeracion', $idnumeracion);
-            $stmtInsert->bindParam(':fecha', $fecha);
-            $stmtInsert->bindParam(':base', $base);
-            $stmtInsert->bindParam(':impuestos', $impuestos);
-            $stmtInsert->execute();
-
-            // Consulta SQL para obtener estadísticas actualizadas
-            $sqlStatistics = "SELECT e.razonsocial,
-                      SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
-                      SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
-                      SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-                FROM empresa e
-                LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                WHERE d.fecha BETWEEN :start_date AND :end_date
-                GROUP BY e.razonsocial";
-
-            // Preparar y ejecutar la consulta para obtener estadísticas actualizadas
-            $stmtStatistics = $this->conn->prepare($sqlStatistics);
-            $stmtStatistics->bindParam(':start_date', $this->dateStart);
-            $stmtStatistics->bindParam(':end_date', $this->dateEnd);
-            $stmtStatistics->execute();
-
-            // Obtener los resultados como un array de objetos
-            $result = $stmtStatistics->fetchAll(PDO::FETCH_OBJ);
-
-            // Devolver los resultados
-            return $result;
-        } catch (PDOException $e) {
-            // Manejo de errores
-            echo "Error al ejecutar la consulta: " . $e->getMessage();
-            return []; // Devolver un array vacío o manejar el error según sea necesario
-        }
-    }
-
-    public function deleteDocumentIdData(){
-        try {
-            // Verificar si se recibió el ID del documento a eliminar
-            if (isset($_POST['documentId'])) {
-                // Obtener el ID del documento desde el formulario
-                $documentId = $_POST['documentId'];
-
-                // Consulta SQL para eliminar el documento
-                $sqlDelete = "DELETE FROM documento WHERE iddocumento = :documentId";
-
-                // Preparar y ejecutar la consulta de eliminación
-                $stmtDelete = $this->conn->prepare($sqlDelete);
-                $stmtDelete->bindParam(':documentId', $documentId, PDO::PARAM_INT);
-                $stmtDelete->execute();
-
-                // Redirigir a una página de éxito o mostrar un mensaje
-                header('Location: deleteSuccess.php');
-                exit();
-            } else {
-                // Si no se proporcionó el ID del documento, mostrar un mensaje de error
-                echo "ID del documento no especificado.";
-            }
-        } catch (PDOException $e) {
-            // Manejar errores de la base de datos
-            echo "Error al eliminar el documento: " . $e->getMessage();
         }
     }
 

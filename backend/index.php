@@ -38,13 +38,13 @@ $app->get($urlBase . '/empresas', [$empresaController, 'read']);
 
 $app->get($urlBase . '/documentsFailedData', [$empresaController, 'getDocumentsFailedData']);
 $app->get($urlBase . '/documents/from-each-company', [$empresaController, 'getDocumentsFromEachCompanyData']);
-$app->get($urlBase . '/documents/for-range-date', [$empresaController, 'getDocumentsForRangeOfDateData']);
+$app->get($urlBase . '/documents/for-range-date/{dateStart}/{dateEnd}', [$empresaController, 'getDocumentsForDateRangeData']);
 $app->get($urlBase . '/documents/failed/more-than-three', [$empresaController, 'getDocumentsFailedMoreThanThreeData']);
 $app->get($urlBase . '/documents/out-of-range', [$empresaController, 'getDocumentsOutOfRangeData']);
 $app->get($urlBase . '/documents/total-invoice', [$empresaController, 'getDocumentstotalInvoiceData']);
 $app->get($urlBase . '/documents/complete-repeated', [$empresaController, 'getNumberCompleteRepeatedData']);
 
-$app->post($urlBase . '/empresas', [$empresaController, 'createEmpresa']);
+$app->post($urlBase . '/document/numDocument', [$empresaController, 'postSearchDocumentData']);
 $app->patch($urlBase . '/empresas/{id}', [$empresaController, 'updateEmpresa']);
 
 
