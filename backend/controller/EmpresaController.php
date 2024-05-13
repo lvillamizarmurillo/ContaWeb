@@ -236,8 +236,43 @@ class EmpresaController {
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
                 $numero_item = array(
-                    "empresa" => $razonsocial,
+                    "numero_documento" => $numero_documento,
+                    "fecha_emision" => $fecha_emision,
+                    "valor_base" => $valor_base,
+                    "valor_impuestos" => $valor_impuestos,
+                    "nombre_empresa" => $nombre_empresa,
                     "tipo_documento" => $tipo_documento,
+                    "estado_documento" => $estado_documento
+                );
+                array_push($numeros_arr["resultados"], $numero_item);
+            }
+            $response->getBody()->write(json_encode($numeros_arr));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } else {
+            $response->getBody()->write(json_encode(array("message" => "No se encontraron números completos repetidos.")));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+    }
+
+    public function getDocumentCompleteData(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        $result = $this->empresaModel->getDocumentCompleteData();
+        $num = $result->rowCount();
+
+        if ($num > 0) {
+            $numeros_arr = array();
+            $numeros_arr["resultados"] = array();
+
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                $numero_item = array(
+                    "numero_documento" => $numero_documento,
+                    "fecha_emision" => $fecha_emision,
+                    "valor_base" => $valor_base,
+                    "valor_impuestos" => $valor_impuestos,
+                    "nombre_empresa" => $nombre_empresa,
+                    "tipo_documento" => $tipo_documento,
+                    "estado_documento" => $estado_documento
                 );
                 array_push($numeros_arr["resultados"], $numero_item);
             }

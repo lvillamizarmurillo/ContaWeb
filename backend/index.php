@@ -42,6 +42,7 @@ $app->get($urlBase . '/documents/failed/more-than-three', [$empresaController, '
 $app->get($urlBase . '/documents/out-of-range', [$empresaController, 'getDocumentsOutOfRangeData']);
 $app->get($urlBase . '/documents/total-invoice', [$empresaController, 'getDocumentstotalInvoiceData']);
 $app->get($urlBase . '/documents/complete-repeated', [$empresaController, 'getNumberCompleteRepeatedData']);
+$app->get($urlBase . '/documents/info-document-complete', [$empresaController, 'getDocumentCompleteData']);
 $app->get($urlBase . '/documents/info-numeration', [$empresaController, 'getSearchNumeration']);
 $app->get($urlBase . '/documents/info-for-delete', [$empresaController, 'getDocumentsforDelete']);
 $app->post($urlBase . '/document/numDocument', [$empresaController, 'postSearchDocumentData']);

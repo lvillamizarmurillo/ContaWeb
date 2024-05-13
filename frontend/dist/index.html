@@ -45,8 +45,13 @@
                             <table class="table table-sm" id="response1">
                                 <thead>
                                   <tr>
-                                    <th scope="col">Empresa </th>
-                                    <th scope="col">Tipo de documento</th>
+                                    <th>Numero de documento</th>
+                                            <th>Nombre de empresa</th>
+                                            <th>Tipo documento</th>
+                                            <th>Valor base</th>
+                                            <th>Valor impuestos final</th>
+                                            <th>Estado del documento</th>
+                                            <th>Fecha de emision</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -94,16 +99,11 @@
                                               <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint2">
                                                 <div class="mb-3 position-relative">
                                                   <label for="empresa" class="text-black">Numeraciones:</label>
-                                                  <select class="form-select" aria-label="Default select example" name="Numeraciones" id="Numeraciones">
-                                                    <option selected>Selecciona una</option>
-                                                    <option value="1">empresa1</option>
-                                                    <option value="2">empresa2</option>
-                                                    <option value="3">empresa3</option>
-                                                    <option value="4">empresa4</option>
-                                                    <option value="5">empresa5</option>
+                                                  <select class="form-select" aria-label="Default select example" name="Numeraciones" id="NumeracionesSelect">
+                                                    
                                                   </select>
                                                   <label for="estado" class="text-black">Estado</label>
-                                                  <select class="form-select" aria-label="Default select example" name="numeracion" id="estado">
+                                                  <select class="form-select" aria-label="Default select example" name="estado" id="estado">
                                                     <option selected>Selecciona una</option>
                                                     <option value="1">Correcto</option>
                                                     <option value="2">Validandose</option>
@@ -230,29 +230,35 @@
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th>Empresa</th>
-                                            <th>Tipo de documento</th>
-                                            <th>Prefijo</th>
-                                            <th>Consecutivo inicial</th>
-                                            <th>Consecutivo final</th>
+                                            <th>Numero de documento</th>
+                                            <th>Nombre de empresa</th>
+                                            <th>Tipo documento</th>
+                                            <th>Valor base</th>
+                                            <th>Valor impuestos final</th>
+                                            <th>Estado del documento</th>
+                                            <th>Fecha de emision</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Empresa</th>
-                                            <th>Tipo de documento</th>
-                                            <th>Prefijo</th>
-                                            <th>Consecutivo inicial</th>
-                                            <th>Consecutivo final</th>
+                                            <th>Numero de documento</th>
+                                            <th>Nombre de empresa</th>
+                                            <th>Tipo documento</th>
+                                            <th>Valor base</th>
+                                            <th>Valor impuestos final</th>
+                                            <th>Estado del documento</th>
+                                            <th>Fecha de emision</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         <tr>
-                                            <th>Empresa</th>
-                                            <th>Tipo de documento</th>
-                                            <th>Prefijo</th>
-                                            <th>Consecutivo inicial</th>
-                                            <th>Consecutivo final</th>
+                                            <th>Numero de documento</th>
+                                            <th>Nombre de empresa</th>
+                                            <th>Tipo documento</th>
+                                            <th>Valor base</th>
+                                            <th>Valor impuestos final</th>
+                                            <th>Estado del documento</th>
+                                            <th>Fecha de emision</th>
                                         </tr>
                                     </tbody>
                                 </table>

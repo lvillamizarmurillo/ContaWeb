@@ -209,14 +209,26 @@ class EmpresaModel {
     public function postSearchDocumentData($numDomuent)
     {
         try {
-            $sql = "SELECT e.idempresa, e.identificacion, e.razonsocial,
-                    td.description AS tipo_documento
-                    FROM empresa e
-                    INNER JOIN numeracion n ON e.idempresa = n.idempresa
-                    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
-                    INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                    WHERE d.numero = '".$numDomuent."';
-";
+            $sql = "SELECT
+                        d.numero AS numero_documento,
+                        d.fecha AS fecha_emision,
+                        d.base AS valor_base,
+                        d.impuestos AS valor_impuestos,
+                        e.razonsocial AS nombre_empresa,
+                        t.description AS tipo_documento,
+                        es.description AS estado_documento
+                    FROM
+                        documento d
+                    JOIN
+                        numeracion n ON d.idnumeracion = n.idnumeracion
+                    JOIN
+                        tipodocumento t ON n.idtipodocumento = t.idtipodocumento
+                    JOIN
+                        empresa e ON n.idempresa = e.idempresa
+                    JOIN
+                        estado es ON d.idestado = es.idestado
+                    WHERE
+                        d.numero = '".$numDomuent."'";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -230,6 +242,40 @@ class EmpresaModel {
             return []; // Devolver un array vacío o manejar el error según sea necesario
         }
     }
+
+    public function getDocumentCompleteData(){
+        try {
+            $sql = "SELECT
+                    d.numero AS numero_documento,
+                    d.fecha AS fecha_emision,
+                    d.base AS valor_base,
+                    d.impuestos AS valor_impuestos,
+                    e.razonsocial AS nombre_empresa,
+                    t.description AS tipo_documento,
+                    es.description AS estado_documento
+                FROM
+                    documento d
+                JOIN
+                    numeracion n ON d.idnumeracion = n.idnumeracion
+                JOIN
+                    tipodocumento t ON n.idtipodocumento = t.idtipodocumento
+                JOIN
+                    empresa e ON n.idempresa = e.idempresa
+                JOIN
+                    estado es ON d.idestado = es.idestado";
+
+            // Preparar y ejecutar la consulta
+            $exe = $this->conn->prepare($sql);
+            $exe->execute();
+
+            // Obtener los resultados como un array de objetos
+            return $exe; // Devolver resultados
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return []; // Devolver un array vacío o manejar el error según sea necesario
+        }
+    } 
     
     public function getSearchNumeration()
     {
