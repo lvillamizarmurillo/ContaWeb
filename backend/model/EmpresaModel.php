@@ -1,88 +1,30 @@
 <?php
 class EmpresaModel {
-    private $conn;
-    private $table_name = "empresa";
-
-    public $id;
-    public $nombre;
-    public $direccion;
-
     public function __construct($db) {
         $this->conn = $db;
     }
-
-    
-    public function read() {
-        $query = "SELECT id, nombre, direccion FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    public function readOne($id) {
-        $query = "SELECT id, nombre, direccion FROM " . $this->table_name . " WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $id);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row : false;
-    }
-
-    
-    public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET nombre=:nombre, direccion=:direccion";
-        $stmt = $this->conn->prepare($query);  // aquí lo que hace es como meter la consulta en un cajón o transacción para proceder a ejecutarla
-
-        // limpiar datos por si le meten un sql inyectshion :v
-        $this->nombre=htmlspecialchars(strip_tags($this->nombre));
-        $this->direccion=htmlspecialchars(strip_tags($this->direccion));
-
-        // aquí vincula los valores de las propiedades de la clase a los del string donde va cosas como :nombre , :direccion, izquierda clave, derecha valor
-        $stmt->bindParam(":nombre", $this->nombre);
-        $stmt->bindParam(":direccion", $this->direccion);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
-
-    
-    public function update() {
-        $query = "UPDATE " . $this->table_name . " SET nombre = :nombre, direccion = :direccion WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        
-        $this->id=htmlspecialchars(strip_tags($this->id));
-        $this->nombre=htmlspecialchars(strip_tags($this->nombre));
-        $this->direccion=htmlspecialchars(strip_tags($this->direccion));
-        
-        $stmt->bindParam(":id", $this->id);
-        $stmt->bindParam(":nombre", $this->nombre);
-        $stmt->bindParam(":direccion", $this->direccion);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
-
-    
-    public function delete() {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        
-        $this->id=htmlspecialchars(strip_tags($this->id));
-        
-        $stmt->bindParam(1, $this->id);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
-
-
     ### CONSULTAS ###
+    
+    public function getDocumentsforDelete()
+    {
+        try {
+            $sql ="SELECT d.numero, e.razonsocial AS nombre_empresa, td.description AS tipo_documento, es.description AS estado_documento
+                   FROM documento d
+                   INNER JOIN numeracion n ON d.idnumeracion = n.idnumeracion
+                   INNER JOIN empresa e ON n.idempresa = e.idempresa
+                   INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                   INNER JOIN estado es ON d.idestado = es.idestado";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt;
+
+
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return []; // Devolver un array vacío o manejar el error según sea necesario
+        }
+    }
 
     public function getDocumentsFailedData()
     {

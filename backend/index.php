@@ -43,6 +43,7 @@ $app->get($urlBase . '/documents/out-of-range', [$empresaController, 'getDocumen
 $app->get($urlBase . '/documents/total-invoice', [$empresaController, 'getDocumentstotalInvoiceData']);
 $app->get($urlBase . '/documents/complete-repeated', [$empresaController, 'getNumberCompleteRepeatedData']);
 $app->get($urlBase . '/documents/info-numeration', [$empresaController, 'getSearchNumeration']);
+$app->get($urlBase . '/documents/info-for-delete', [$empresaController, 'getDocumentsforDelete']);
 $app->post($urlBase . '/document/numDocument', [$empresaController, 'postSearchDocumentData']);
 $app->post($urlBase . '/document/newDocument', [$empresaController, 'postNewDocumentData']);
 $app->put($urlBase . '/document/updateDocument', [$empresaController, 'putDocumentData']);

@@ -12,7 +12,34 @@ class EmpresaController {
         $this->empresaModel = new EmpresaModel($db);
     }
     ### ENDPOINTS ###
+     public function getDocumentsforDelete(Request $request, Response $response) {
+        $result = $this->empresaModel->getDocumentsforDelete();
+        $num = $result->rowCount();
 
+        if ($num > 0) {
+            $empresas_arr = array();
+            $empresas_arr["resultados"] = array();
+
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+//                var_dump( $row ); die;
+                $empresa_item = array(
+                    "nombre_empresa" => $nombre_empresa,
+                    "numero" => $numero,
+                    "tipo_documento" => $tipo_documento,
+                    "estado_documento" => $estado_documento
+                );
+                array_push($empresas_arr["resultados"], $empresa_item);
+            }
+            $response->getBody()->write(json_encode($empresas_arr));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } else {
+            $response->getBody()->write(json_encode(array("message" => "No se encontraron empresas.")));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+    }
+    
+    
     public function getDocumentsFailedData(Request $request, Response $response) {
         $result = $this->empresaModel->getDocumentsFailedData();
         $num = $result->rowCount();
