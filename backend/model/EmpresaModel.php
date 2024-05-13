@@ -282,15 +282,21 @@ class EmpresaModel {
     {
         try {
             // Consulta SQL
-            $sql = "SELECT e.razonsocial AS nombre_empresa,
-                            td.description AS tipo_documento,
-                            n.prefijo,
-                            n.consecutivoinicial,
-                            n.consecutivofinal,
-                            n.idnumeracion
-                    FROM numeracion n
-                    INNER JOIN empresa e ON n.idempresa = e.idempresa
-                    INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento";
+            $sql = "SELECT 
+                        e.razonsocial AS nombre_empresa,
+                        td.description AS tipo_documento,
+                        n.prefijo,
+                        n.consecutivoinicial,
+                        n.consecutivofinal,
+                        n.vigenciainicial,  -- Agregar vigencia inicial
+                        n.vigenciafinal,   -- Agregar vigencia final
+                        n.idnumeracion
+                    FROM 
+                        numeracion n
+                    INNER JOIN 
+                        empresa e ON n.idempresa = e.idempresa
+                    INNER JOIN 
+                        tipodocumento td ON n.idtipodocumento = td.idtipodocumento";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -364,10 +370,10 @@ class EmpresaModel {
             $exe->bindParam(':numero', $data['numero']);
             $exe->execute();
 
-            return $exe->rowCount(); // Devolver la cantidad de filas afectadas
+            return $exe; // Devolver la cantidad de filas afectadas
         } catch (PDOException $e) {
             // Manejo de errores
-            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            echo "Error al ejecutar la consulta: " . $e->getMessage();    
             return false; // Devolver false u otra señal de error según sea necesario
         }
     }

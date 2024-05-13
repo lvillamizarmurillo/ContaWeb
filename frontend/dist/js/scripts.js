@@ -1,12 +1,3 @@
-/*!
-    * Start Bootstrap - SB Admin v7.0.7 (https://startbootstrap.com/template/sb-admin)
-    * Copyright 2013-2024 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
-    */
-    // 
-// Scripts
-// 
-
 window.addEventListener('DOMContentLoaded', event => {
 
     // Toggle the side navigation
@@ -36,9 +27,11 @@ $(document).ready(function() {
             success: function(data) {
                 if (data && data.resultados) {
                     var selectUpdate = $('#documentosSelect');
+                    var deleteSelect = $('#deleteSelect');
                     selectUpdate.empty(); // Limpiar opciones existentes en el select
                     var tbody = $('#datatablesSimple tbody');
                     tbody.empty();
+                    deleteSelect.empty();
     
                     // Iterar sobre los resultados recibidos
                     data.resultados.forEach(function(resultado) {
@@ -67,6 +60,7 @@ $(document).ready(function() {
                         row.append($('<td>').text(resultado.fecha_emision));
                         tbody.append(row)
                         selectUpdate.append(option);
+                        deleteSelect.append(option);
                     });
                 } else {
                     // Si no hay resultados, mostrar un mensaje o dejar el select vacío
@@ -213,12 +207,6 @@ $(document).ready(function() {
         // Combinar el prefijo seleccionado con el número de documento
         var idnumeracion = $('#documentosSelect option:selected').data('numeracionData');
         var numFactComplet = $('#documentosSelect option:selected').data('numFactComplet');
-        console.log(idestado);
-        console.log(fecha);
-        console.log(base);
-        console.log(impuestos);
-        console.log(idnumeracion);
-        console.log(numFactComplet);
         // Realizar la solicitud AJAX con los datos requeridos
         $.ajax({
             url: 'http://localhost/ContaWeb/backend/document/updateDocument',
@@ -242,6 +230,36 @@ $(document).ready(function() {
             error: function(jqXHR, textStatus, errorThrown) {
                 // Mostrar mensaje de error en un alert
                 alert('Error al actualizar el documento. Inténtelo de nuevo.');
+            }
+        });
+    }
+
+    function eliminarDocumento() {
+    
+        var idnumeracion = $('#deleteSelect option:selected').data('numeracionData');
+        var numFactComplet = $('#deleteSelect option:selected').data('numFactComplet');
+
+        console.log(idnumeracion);
+        console.log(numFactComplet);
+        // Realizar la solicitud AJAX con los datos requeridos
+        $.ajax({
+            url: 'http://localhost/ContaWeb/backend/document/deleteDocument',
+            method: 'DELETE',
+            dataType: 'json',
+            data: {
+                idnumeracion: idnumeracion,
+                numero: numFactComplet
+            },
+            success: function(data) {
+                // Mostrar mensaje de éxito en un alert
+                cargarEmpresas();
+                alert('Documento eliminado correctamente.');
+    
+                // Lógica adicional según sea necesario (por ejemplo, redireccionar a otra página)
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Mostrar mensaje de error en un alert
+                alert('Error al eliminar el documento. Inténtelo de nuevo.');
             }
         });
     }
@@ -270,6 +288,12 @@ $(document).ready(function() {
     $('#myFormEndpoint3').submit(function(e) {
         e.preventDefault();
         actualizarDocumento();
+        // Puedes agregar lógica adicional aquí si es necesario para el formulario
+    });
+
+    $('#myFormEndpoint4').submit(function(e) {
+        e.preventDefault();
+        eliminarDocumento();
         // Puedes agregar lógica adicional aquí si es necesario para el formulario
     });
 });

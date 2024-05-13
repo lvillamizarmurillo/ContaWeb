@@ -29,12 +29,6 @@ $empresaController = new EmpresaController($db);
 
 $urlBase = '/ContaWeb/backend';
 
-// define las rutas papu
-//$app->get($urlBase . '/empresas/{id}', [$empresaController, 'readOne']);
-//$app->post($urlBase . '/empresas', [$empresaController, 'create']);
-//$app->put($urlBase . '/empresas/{id}', [$empresaController, 'update']);
-//$app->delete($urlBase . '/empresas/{id}', [$empresaController, 'delete']);
-
 $app->get($urlBase . '/documentsFailedData', [$empresaController, 'getDocumentsFailedData']);
 $app->get($urlBase . '/documents/for-range-date/{dateStart}/{dateEnd}', [$empresaController, 'getDocumentsForDateRangeData']);
 $app->get($urlBase . '/documents/from-each-company', [$empresaController, 'getDocumentsFromEachCompanyData']);
@@ -48,11 +42,9 @@ $app->get($urlBase . '/documents/info-for-delete', [$empresaController, 'getDocu
 $app->post($urlBase . '/document/numDocument', [$empresaController, 'postSearchDocumentData']);
 $app->post($urlBase . '/document/newDocument', [$empresaController, 'postNewDocumentData']);
 $app->put($urlBase . '/document/updateDocument', [$empresaController, 'putDocumentData']);
-$app->put($urlBase . '/document/deleteDocument', [$empresaController, 'deleteDocumentData']);
+$app->delete($urlBase . '/document/deleteDocument', [$empresaController, 'deleteDocumentData']);
 
 
-
-//$app->get($urlBase . '/empresas/{fechaEntrada}/{fechaSalida}', [$empresaController, 'funcionContorlador']);
 
 $app->run();
  

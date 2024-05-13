@@ -318,6 +318,8 @@ class EmpresaController {
                     "prefijo" => $prefijo,
                     "consecutivoinicial" => $consecutivoinicial,
                     "consecutivofinal" => $consecutivofinal,
+                    "vigenciainicial" => $vigenciainicial,
+                    "vigenciafinal" => $vigenciafinal
                 );
                 array_push($numeros_arr["resultados"], $numero_item);
             }
@@ -355,7 +357,7 @@ class EmpresaController {
             return $response->withHeader('Content-Type', 'application/json')->withStatus(201); // Código 201 para "Created"
         } else {
             // Error al crear el documento
-            $response->getBody()->write(json_encode(array("message" => "Error al eliminaso el documento.")));
+            $response->getBody()->write(json_encode(array("message" => "Error al eliminar el documento.")));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500); // Código 500 para "Internal Server Error"
         }
     }
