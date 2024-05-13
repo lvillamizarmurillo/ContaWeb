@@ -272,7 +272,8 @@ class EmpresaController {
                     "valor_impuestos" => $valor_impuestos,
                     "nombre_empresa" => $nombre_empresa,
                     "tipo_documento" => $tipo_documento,
-                    "estado_documento" => $estado_documento
+                    "estado_documento" => $estado_documento,
+                    "idnumeracion" => $idnumeracion
                 );
                 array_push($numeros_arr["resultados"], $numero_item);
             }

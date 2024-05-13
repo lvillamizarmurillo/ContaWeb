@@ -246,23 +246,24 @@ class EmpresaModel {
     public function getDocumentCompleteData(){
         try {
             $sql = "SELECT
-                    d.numero AS numero_documento,
-                    d.fecha AS fecha_emision,
-                    d.base AS valor_base,
-                    d.impuestos AS valor_impuestos,
-                    e.razonsocial AS nombre_empresa,
-                    t.description AS tipo_documento,
-                    es.description AS estado_documento
-                FROM
-                    documento d
-                JOIN
-                    numeracion n ON d.idnumeracion = n.idnumeracion
-                JOIN
-                    tipodocumento t ON n.idtipodocumento = t.idtipodocumento
-                JOIN
-                    empresa e ON n.idempresa = e.idempresa
-                JOIN
-                    estado es ON d.idestado = es.idestado";
+                        d.numero AS numero_documento,
+                        d.fecha AS fecha_emision,
+                        d.base AS valor_base,
+                        d.impuestos AS valor_impuestos,
+                        e.razonsocial AS nombre_empresa,
+                        t.description AS tipo_documento,
+                        es.description AS estado_documento,
+                        n.idnumeracion
+                    FROM
+                        documento d
+                    JOIN
+                        numeracion n ON d.idnumeracion = n.idnumeracion
+                    JOIN
+                        tipodocumento t ON n.idtipodocumento = t.idtipodocumento
+                    JOIN
+                        empresa e ON n.idempresa = e.idempresa
+                    JOIN
+                        estado es ON d.idestado = es.idestado";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -327,19 +328,20 @@ class EmpresaModel {
         }
     }
   
-    public function putDocumentData($data){
+    public function putDocumentData($data) {
         try {
-            $sql = "UPDATE documento SET idestado = :idestado, fecha = :fecha, base = :base, impuestos = :impuestos
-                WHERE idnumeracion = :idnumeracion AND numero = :numero";
+            // Consulta SQL corregida
+            $sql = "UPDATE documento SET idestado = :idestado, fecha = :fecha, numero = :numero, base = :base, impuestos = :impuestos
+                WHERE idnumeracion = :idnumeracion";
 
             // Preparar y ejecutar la consulta con los valores
             $exe = $this->conn->prepare($sql);
             $exe->bindParam(':idnumeracion', $data['idnumeracion']);
             $exe->bindParam(':idestado', $data['idestado']);
             $exe->bindParam(':numero', $data['numero']);
-            $exe->bindParam(':fecha', $data['fecha']);
-            $exe->bindParam(':base', $data['base']);
-            $exe->bindParam(':impuestos', $data['impuestos']);
+            $exe->bindParam(':fecha', $data['fecha']); // Fecha de emisión del documento
+            $exe->bindParam(':base', $data['base']); // Valor base del documento
+            $exe->bindParam(':impuestos', $data['impuestos']); // Valor de impuestos del documento
             $exe->execute();
 
             return $exe;
@@ -349,6 +351,7 @@ class EmpresaModel {
             return []; // Devolver un array vacío o manejar el error según sea necesario
         }
     }
+
     
     public function deleteDocumentData($data){
         try {
