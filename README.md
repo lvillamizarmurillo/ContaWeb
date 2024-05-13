@@ -7,8 +7,7 @@
    Comienza clonando el repositorio de ContaWeb desde GitHub. Abre una terminal y ejecuta los siguientes comandos:
 
    ```
-   bashCopiar códigogit clone https://github.com/your-username/ContaWeb.git
-   cd ContaWeb
+   bashCopiar código git clone https://github.com/lvillamizarmurillo/ContaWeb.git
    ```
 
 ### Instalación y Configuración del Backend
