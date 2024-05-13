@@ -34,15 +34,28 @@ $(document).ready(function() {
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                console.log('Datos de empresas recibidos:');
-                console.log(data);
-                // Aquí puedes procesar los datos recibidos como desees
+                // Manipula los datos recibidos para poblar la tabla
+                if (data && data.resultados) {
+                    var tbody = $('#datatablesSimple tbody');
+                    tbody.empty(); // Limpiar contenido existente
+    
+                    data.resultados.forEach(function(resultado) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(resultado.empresa));
+                        row.append($('<td>').text(resultado.tipo_documento));
+                        row.append($('<td>').text(resultado.prefijo));
+                        row.append($('<td>').text(resultado.consecutivoinicial));
+                        row.append($('<td>').text(resultado.consecutivofinal));
+                        tbody.append(row);
+                    });
+                }
             },
-            error: function() {
-                console.log('Error al cargar empresas.');
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error al obtener datos:', textStatus, errorThrown);
             }
         });
     }
+
     function cargarDocumento() {
         var numDocument = $('#InputNumeracion').val();
         $.ajax({
@@ -53,12 +66,31 @@ $(document).ready(function() {
                 numDocument: numDocument
             },
             success: function(data) {
-                console.log('Datos de empresas recibidos:');
-                console.log(data);
-                // Aquí puedes procesar los datos recibidos como desees
+                var tbody = $('#response1 tbody');
+                tbody.empty(); // Limpiar contenido existente
+    
+                if (data && data.resultados && data.resultados.length > 0) {
+                    // Si hay resultados, pobla la tabla
+                    data.resultados.forEach(function(resultado) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(resultado.empresa));
+                        row.append($('<td>').text(resultado.tipo_documento));
+                        tbody.append(row);
+                    });
+                } else {
+                    // Si no hay resultados, mostrar un mensaje en la tabla
+                    var messageRow = $('<tr>');
+                    messageRow.append($('<td colspan="2" style="text-align:center;">').text('No se encontraron resultados.'));
+                    tbody.append(messageRow);
+                }
             },
             error: function() {
                 console.log('Error al cargar empresas.');
+                var tbody = $('#response1 tbody');
+                tbody.empty(); // Limpiar contenido existente
+                var messageRow = $('<tr>');
+                messageRow.append($('<td colspan="2" style="text-align:center; color:red;">').text('Error al cargar los datos.'));
+                tbody.append(messageRow);
             }
         });
     }
