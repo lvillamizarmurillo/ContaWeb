@@ -7,11 +7,30 @@
 // Scripts
 // 
 
+window.addEventListener('DOMContentLoaded', event => {
+
+    // Toggle the side navigation
+    const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    if (sidebarToggle) {
+        // Uncomment Below to persist sidebar toggle between refreshes
+        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+        //     document.body.classList.toggle('sb-sidenav-toggled');
+        // }
+        sidebarToggle.addEventListener('click', event => {
+            event.preventDefault();
+            document.body.classList.toggle('sb-sidenav-toggled');
+            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+        });
+    }
+
+});
+
+
 $(document).ready(function() {
     // Función para cargar opciones de empresas mediante AJAX
     function cargarEmpresas() {
         $.ajax({
-            url: 'http://localhost/ContaWeb/backend/documentsFailedData',
+            url: 'http://localhost/ContaWeb/backend/documents/info-numeration',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -60,7 +79,16 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
-    $('#updateDocumentoForm').submit(function(e) {
+
+
+    $('#myFormEndpoint1').submit(function(e) {
+        e.preventDefault();
+        cargarDocumento();
+        // Puedes agregar lógica adicional aquí si es necesario para el formulario
+    });
+
+
+    $('#myFormEndpoint2').submit(function(e) {
         e.preventDefault();
 
         var documentoId = $('#documentoId').val();
@@ -68,25 +96,5 @@ $(document).ready(function() {
         var base = $('#base').val();
         var impuestos = $('#impuestos').val();
 
-        // Realizar validaciones adicionales si es necesario
-
-        // Realizar la solicitud PUT usando AJAX
-        $.ajax({
-            url: 'actualizar_documento.php',
-            method: 'PUT',
-            data: {
-                iddocumento: documentoId,
-                fecha: fecha,
-                base: base,
-                impuestos: impuestos
-            },
-            success: function(response) {
-                $('#message').html('<p>Documento actualizado correctamente.</p>');
-            },
-            error: function(xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                $('#message').html('<p>Error al actualizar documento: ' + errorMessage + '</p>');
-            }
-        });
     });
 });

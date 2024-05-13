@@ -1,0 +1,55 @@
+-- Definición de la tabla 'empresa' que almacena información sobre las empresas
+CREATE TABLE empresa (
+    idempresa SERIAL PRIMARY KEY,  -- Identificador único de la empresa
+    identificacion VARCHAR(16) NOT NULL,  -- Número de identificación de la empresa (obligatorio)
+    razonsocial VARCHAR(256)  -- Razón social de la empresa
+);
+
+-- Definición de la tabla 'tipodocumento' que guarda los tipos de documentos disponibles
+CREATE TABLE tipodocumento (
+    idtipodocumento SERIAL PRIMARY KEY,  -- Identificador único del tipo de documento
+    description VARCHAR(256) NOT NULL  -- Descripción del tipo de documento (obligatorio)
+);
+
+-- Definición de la tabla 'numeracion' para mantener la numeración de documentos por tipo y empresa
+CREATE TABLE numeracion (
+    idnumeracion SERIAL PRIMARY KEY,  -- Identificador único de la numeración
+    idtipodocumento INTEGER NOT NULL REFERENCES tipodocumento(idtipodocumento),  -- Tipo de documento asociado
+    idempresa INTEGER NOT NULL REFERENCES empresa(idempresa),  -- Empresa asociada
+    prefijo VARCHAR(8) NOT NULL,  -- Prefijo de la numeración
+    consecutivoinicial INTEGER NOT NULL,  -- Número inicial de la serie
+    consecutivofinal INTEGER NOT NULL,  -- Número final de la serie
+    vigenciainicial DATE NOT NULL,  -- Fecha de inicio de la vigencia
+    vigenciafinal DATE NOT NULL  -- Fecha de fin de la vigencia
+);
+
+-- Definición de la tabla 'estado' que representa los posibles estados de un documento
+CREATE TABLE estado (
+    idestado SERIAL PRIMARY KEY,  -- Identificador único del estado
+    description VARCHAR(256) NOT NULL,  -- Descripción del estado (obligatorio)
+    exitoso BOOLEAN NOT NULL  -- Indica si el estado es exitoso (true) o no (false)
+);
+
+-- Definición de la tabla 'documento' que almacena la información de los documentos generados
+CREATE TABLE documento (
+    iddocumento SERIAL PRIMARY KEY,  -- Identificador único del documento
+    idnumeracion INTEGER NOT NULL REFERENCES numeracion(idnumeracion),  -- Numeración asociada al documento
+    idestado INTEGER NOT NULL REFERENCES estado(idestado),  -- Estado actual del documento
+    numero VARCHAR(16) NOT NULL,  -- Número único del documento
+    fecha DATE NOT NULL,  -- Fecha de emisión del documento
+    base DECIMAL NOT NULL,  -- Valor base del documento
+    impuestos DECIMAL NOT NULL  -- Valor de impuestos del documento
+);
+
+-- Agregar restricciones de clave externa (FK) para mantener integridad referencial
+ALTER TABLE numeracion
+    ADD CONSTRAINT fk_numeracion_tipodocumento FOREIGN KEY (idtipodocumento) REFERENCES tipodocumento(idtipodocumento);
+
+ALTER TABLE numeracion
+    ADD CONSTRAINT fk_numeracion_empresa FOREIGN KEY (idempresa) REFERENCES empresa(idempresa);
+
+ALTER TABLE documento
+    ADD CONSTRAINT fk_documento_numeracion FOREIGN KEY (idnumeracion) REFERENCES numeracion(idnumeracion);
+
+ALTER TABLE documento
+    ADD CONSTRAINT fk_documento_estado FOREIGN KEY (idestado) REFERENCES estado(idestado);

@@ -1,0 +1,79 @@
+-- Consulta 1: Listar empresas con más documentos fallidos que exitosos
+SELECT e.idempresa, e.identificacion, e.razonsocial,
+       estadisticas.cantidad_documentos_exitosos AS documentos_exitosos,
+       estadisticas.cantidad_documentos_fallidos AS documentos_fallidos
+FROM empresa e
+INNER JOIN (
+    SELECT n.idempresa,
+           SUM(CASE WHEN es.exitoso = true THEN 1 ELSE 0 END) AS cantidad_documentos_exitosos,
+           SUM(CASE WHEN es.exitoso = false THEN 1 ELSE 0 END) AS cantidad_documentos_fallidos
+    FROM numeracion n
+    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+    INNER JOIN estado es ON d.idestado = es.idestado
+    GROUP BY n.idempresa
+) AS estadisticas ON e.idempresa = estadisticas.idempresa
+WHERE estadisticas.cantidad_documentos_fallidos > estadisticas.cantidad_documentos_exitosos;
+
+-- Consulta 2: Contar tipos de documentos generados por empresa entre fechas específicas
+SELECT e.idempresa, e.identificacion, e.razonsocial,
+       COUNT(CASE WHEN td.description = 'Factura' THEN 1 END) AS total_facturas,
+       COUNT(CASE WHEN td.description = 'Debito' THEN 1 END) AS total_notas_debito,
+       COUNT(CASE WHEN td.description = 'Credito' THEN 1 END) AS total_notas_credito
+FROM empresa e
+LEFT JOIN numeracion n ON e.idempresa = n.idempresa
+LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
+LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+WHERE d.fecha BETWEEN '2020-01-01' AND '2020-12-31'
+GROUP BY e.idempresa, e.identificacion, e.razonsocial;
+
+-- Consulta 3: Listar documentos por estado para cada empresa
+SELECT e.idempresa, e.identificacion, e.razonsocial,
+       es.description AS estado,
+       COUNT(*) AS cantidad_documentos
+FROM empresa e
+INNER JOIN numeracion n ON e.idempresa = n.idempresa
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+INNER JOIN estado es ON d.idestado = es.idestado
+GROUP BY e.idempresa, e.identificacion, e.razonsocial, es.description
+ORDER BY e.idempresa, es.description;
+
+-- Consulta 4: Listar empresas con más de 3 documentos no exitosos
+SELECT e.idempresa, e.identificacion, e.razonsocial
+FROM empresa e
+INNER JOIN numeracion n ON e.idempresa = n.idempresa
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+INNER JOIN estado es ON d.idestado = es.idestado
+WHERE es.exitoso = false
+GROUP BY e.idempresa
+HAVING COUNT(CASE WHEN es.exitoso = false THEN 1 END) > 3;
+
+-- Consulta 5: Listar documentos fuera de rango y vigencia por empresa
+SELECT e.idempresa, e.identificacion, e.razonsocial,
+       COUNT(*) AS cantidad_documentos_fuera_de_rango
+FROM empresa e
+INNER JOIN numeracion n ON e.idempresa = n.idempresa
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+WHERE substring(d.numero FROM '[0-9]+')::INTEGER < n.consecutivoinicial
+   OR substring(d.numero FROM '[0-9]+')::INTEGER > n.consecutivofinal
+   OR d.fecha < n.vigenciainicial
+   OR d.fecha > n.vigenciafinal
+GROUP BY e.idempresa, e.identificacion, e.razonsocial
+ORDER BY e.idempresa;
+
+-- Consulta 6: Total de dinero recibido por tipo de documento y empresa
+SELECT e.idempresa, e.identificacion, e.razonsocial,
+       SUM(CASE WHEN td.description = 'Factura' THEN (d.base + d.impuestos) ELSE 0 END) AS total_facturas,
+       SUM(CASE WHEN td.description = 'Debito' THEN (d.base + d.impuestos) ELSE 0 END) AS total_notas_debito
+FROM empresa e
+INNER JOIN numeracion n ON e.idempresa = n.idempresa
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+GROUP BY e.idempresa, e.identificacion, e.razonsocial;
+
+-- Consulta 7: Identificar números de documento completos repetidos y contar repeticiones
+SELECT CONCAT(n.prefijo, d.numero) AS numero_completo,
+       COUNT(*) AS cantidad_repeticiones
+FROM numeracion n
+INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+GROUP BY numero_completo
+HAVING COUNT(*) > 1;

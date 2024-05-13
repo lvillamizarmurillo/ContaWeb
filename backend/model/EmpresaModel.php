@@ -87,16 +87,21 @@ class EmpresaModel {
     public function getDocumentsFailedData()
     {
         try {
-            $query = "SELECT e.idempresa, e.razonsocial,
-                        COUNT(CASE WHEN es.exitoso THEN 1 END) AS exitosos,
-                        COUNT(CASE WHEN NOT es.exitoso THEN 1 END) AS fallidos
-                    FROM empresa e
-                    INNER JOIN numeracion n ON e.idempresa = n.idempresa
-                    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
-                    INNER JOIN estado es ON d.idestado = es.idestado
-                    GROUP BY e.idempresa, e.razonsocial
-                    HAVING COUNT(CASE WHEN NOT es.exitoso THEN 1 END) > COUNT(CASE WHEN es.exitoso THEN 1 END)";
-            $stmt = $this->conn->prepare($query);
+            $sql ="SELECT e.idempresa, e.identificacion, e.razonsocial,
+                        estadisticas.cantidad_documentos_exitosos AS documentos_exitosos,
+                        estadisticas.cantidad_documentos_fallidos AS documentos_fallidos
+                FROM empresa e
+                INNER JOIN (
+                     SELECT n.idempresa,
+                            SUM(CASE WHEN es.exitoso = true THEN 1 ELSE 0 END) AS cantidad_documentos_exitosos,
+                            SUM(CASE WHEN es.exitoso = false THEN 1 ELSE 0 END) AS cantidad_documentos_fallidos
+                     FROM numeracion n
+                     INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+                     INNER JOIN estado es ON d.idestado = es.idestado
+                     GROUP BY n.idempresa
+                ) AS estadisticas ON e.idempresa = estadisticas.idempresa
+                WHERE estadisticas.cantidad_documentos_fallidos > estadisticas.cantidad_documentos_exitosos";
+            $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt;
 
@@ -108,17 +113,19 @@ class EmpresaModel {
         }
     }
 
-
-
-    public function getDocumentsFromEachCompanyData() {
+    
+    public function getDocumentsForDateRangeData($dateStart,$dateEnd) {
         try {
-            $sql = "SELECT e.razonsocial, es.description AS estado,
-                    COUNT(*) AS cantidad_documentos
+            $sql ="SELECT e.idempresa, e.identificacion, e.razonsocial,
+                        COUNT(CASE WHEN td.description = 'Factura' THEN 1 END) AS total_facturas,
+                        COUNT(CASE WHEN td.description = 'Debito' THEN 1 END) AS total_notas_debito,
+                        COUNT(CASE WHEN td.description = 'Credito' THEN 1 END) AS total_notas_credito
                 FROM empresa e
                 LEFT JOIN numeracion n ON e.idempresa = n.idempresa
                 LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                LEFT JOIN estado es ON d.idestado = es.idestado
-                GROUP BY e.razonsocial, es.description";
+                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+                WHERE d.fecha BETWEEN '".$dateStart."' AND '".$dateEnd."'
+                GROUP BY e.idempresa, e.identificacion, e.razonsocial";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt;
@@ -127,20 +134,19 @@ class EmpresaModel {
             return [];
         }
     }
-    
-    
-    public function getDocumentsForDateRangeData($dateStart,$dateEnd) {
+
+
+    public function getDocumentsFromEachCompanyData() {
         try {
-            $sql = "SELECT e.razonsocial,
-                        SUM(CASE WHEN td.description = 'Factura' THEN 1 ELSE 0 END) AS cantidad_facturas,
-                        SUM(CASE WHEN td.description = 'Debito' THEN 1 ELSE 0 END) AS cantidad_notas_debito,
-                        SUM(CASE WHEN td.description = 'Credito' THEN 1 ELSE 0 END) AS cantidad_notas_credito
-                FROM empresa e
-                LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                WHERE d.fecha BETWEEN '".$dateStart."' AND '".$dateEnd."'
-                GROUP BY e.razonsocial";
+            $sql ="SELECT e.idempresa, e.identificacion, e.razonsocial,
+                    es.description AS estado,
+                    COUNT(*) AS cantidad_documentos
+            FROM empresa e
+            INNER JOIN numeracion n ON e.idempresa = n.idempresa
+            INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+            INNER JOIN estado es ON d.idestado = es.idestado
+            GROUP BY e.idempresa, e.identificacion, e.razonsocial, es.description
+            ORDER BY e.idempresa, es.description";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt;
@@ -156,14 +162,14 @@ class EmpresaModel {
     {
         try {
             // Consulta SQL
-            $sql = "SELECT e.razonsocial
-                    FROM empresa e
-                    LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-                    LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-                    LEFT JOIN estado es ON d.idestado = es.idestado
-                    WHERE NOT es.exitoso
-                    GROUP BY e.razonsocial
-                    HAVING COUNT(*) > 3";
+            $sql = "SELECT e.idempresa, e.identificacion, e.razonsocial
+                FROM empresa e
+                INNER JOIN numeracion n ON e.idempresa = n.idempresa
+                INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+                INNER JOIN estado es ON d.idestado = es.idestado
+                WHERE es.exitoso = false
+                GROUP BY e.idempresa
+                HAVING COUNT(CASE WHEN es.exitoso = false THEN 1 END) > 3";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -181,13 +187,17 @@ class EmpresaModel {
     {
         try {
             // Consulta SQL
-            $sql = "SELECT e.razonsocial,
-                SUM(CASE WHEN d.fecha NOT BETWEEN n.vigenciainicial AND n.vigenciafinal THEN 1 ELSE 0 END) AS cantidad_fecha_fuera_rango,
-                SUM(CASE WHEN d.idnumeracion IS NULL OR d.idnumeracion NOT BETWEEN n.consecutivoinicial AND n.consecutivofinal THEN 1 ELSE 0 END) AS cantidad_numero_fuera_rango
-            FROM empresa e
-            LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-            LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-            GROUP BY e.razonsocial";
+            $sql = "SELECT e.idempresa, e.identificacion, e.razonsocial,
+                            COUNT(*) AS cantidad_documentos_fuera_de_rango
+                    FROM empresa e
+                    INNER JOIN numeracion n ON e.idempresa = n.idempresa
+                    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+                    WHERE substring(d.numero FROM '[0-9]+')::INTEGER < n.consecutivoinicial
+                        OR substring(d.numero FROM '[0-9]+')::INTEGER > n.consecutivofinal
+                        OR d.fecha < n.vigenciainicial
+                        OR d.fecha > n.vigenciafinal
+                    GROUP BY e.idempresa, e.identificacion, e.razonsocial
+                    ORDER BY e.idempresa";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -207,14 +217,14 @@ class EmpresaModel {
     {
         try {
             // Consulta SQL
-            $sql = "SELECT e.razonsocial,
-                SUM(d.base + d.impuestos) AS total_dinero_recibido
+            $sql = "SELECT e.idempresa, e.identificacion, e.razonsocial,
+                    SUM(CASE WHEN td.description = 'Factura' THEN (d.base + d.impuestos) ELSE 0 END) AS total_facturas,
+                    SUM(CASE WHEN td.description = 'Debito' THEN (d.base + d.impuestos) ELSE 0 END) AS total_notas_debito
             FROM empresa e
-            LEFT JOIN numeracion n ON e.idempresa = n.idempresa
-            LEFT JOIN documento d ON n.idnumeracion = d.idnumeracion
-            LEFT JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-            WHERE td.description = 'Factura'
-            GROUP BY e.razonsocial";
+            INNER JOIN numeracion n ON e.idempresa = n.idempresa
+            INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+            INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
+            GROUP BY e.idempresa, e.identificacion, e.razonsocial";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -233,12 +243,12 @@ class EmpresaModel {
     {
         try {
             // Consulta SQL
-            $sql = "SELECT numeracion.idempresa,
-                numeracion.prefijo || numeracion.consecutivoinicial AS numerocompleto,
-                COUNT(*) AS repeticiones
-            FROM numeracion
-            GROUP BY numeracion.idempresa, numerocompleto
-            HAVING COUNT(*) > 1";
+            $sql = "SELECT CONCAT(n.prefijo, d.numero) AS numero_completo,
+                            COUNT(*) AS cantidad_repeticiones
+                    FROM numeracion n
+                    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
+                    GROUP BY numero_completo
+                    HAVING COUNT(*) > 1";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -250,22 +260,6 @@ class EmpresaModel {
             // Manejo de errores
             echo "Error al ejecutar la consulta: " . $e->getMessage();
             return []; // Devolver un array vacío o manejar el error según sea necesario
-        }
-    }
-
-
-    // EJEMPLO POST
-    // insertar uno nuevo
-    // Método para insertar una nueva empresa
-    public function insertEmpresa($identificacion, $razonsocial) {
-        $sql = "INSERT INTO empresa (identificacion, razonsocial) VALUES (:identificacion, :razonsocial)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':identificacion', $identificacion);
-        $stmt->bindParam(':razonsocial', $razonsocial);
-        if ($stmt->execute()) {
-            return $this->conn->lastInsertId(); // Retorna el ID de la empresa insertada
-        } else {
-            return false;
         }
     }
 
@@ -273,11 +267,14 @@ class EmpresaModel {
     public function postSearchDocumentData($numDomuent)
     {
         try {
-            $sql = "SELECT e.razonsocial AS empresa, td.description AS tipo_documento
-                    FROM numeracion n
-                    INNER JOIN empresa e ON n.idempresa = e.idempresa
+            $sql = "SELECT e.idempresa, e.identificacion, e.razonsocial,
+                    td.description AS tipo_documento
+                    FROM empresa e
+                    INNER JOIN numeracion n ON e.idempresa = n.idempresa
+                    INNER JOIN documento d ON n.idnumeracion = d.idnumeracion
                     INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento
-                    WHERE n.idnumeracion = '".$numDomuent."'";
+                    WHERE d.numero = '".$numDomuent."';
+";
 
             // Preparar y ejecutar la consulta
             $exe = $this->conn->prepare($sql);
@@ -291,8 +288,96 @@ class EmpresaModel {
             return []; // Devolver un array vacío o manejar el error según sea necesario
         }
     }
+    
+    public function getSearchNumeration()
+    {
+        try {
+            // Consulta SQL
+            $sql = "SELECT e.razonsocial AS nombre_empresa,
+                            td.description AS tipo_documento,
+                            n.prefijo,
+                            n.consecutivoinicial,
+                            n.consecutivofinal,
+                            n.idnumeracion
+                    FROM numeracion n
+                    INNER JOIN empresa e ON n.idempresa = e.idempresa
+                    INNER JOIN tipodocumento td ON n.idtipodocumento = td.idtipodocumento";
 
+            // Preparar y ejecutar la consulta
+            $exe = $this->conn->prepare($sql);
+            $exe->execute();
 
+            // Obtener los resultados como un array de objetos
+            return $exe; // Devolver resultados
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return []; // Devolver un array vacío o manejar el error según sea necesario
+        }
+    }
+    
+    public function postNewDocumentData($data){
+        try {
+            $sql = "INSERT INTO documento (idnumeracion, idestado, numero, fecha, base, impuestos) 
+                    VALUES (:idnumeracion, :idestado, :numero, :fecha, :base, :impuestos)";
 
+            // Preparar y ejecutar la consulta con los valores
+            $exe = $this->conn->prepare($sql);
+            $exe->bindParam(':idnumeracion', $data['idnumeracion']);
+            $exe->bindParam(':idestado', $data['idestado']);
+            $exe->bindParam(':numero', $data['numero']);
+            $exe->bindParam(':fecha', $data['fecha']);
+            $exe->bindParam(':base', $data['base']);
+            $exe->bindParam(':impuestos', $data['impuestos']);
+            $exe->execute();
 
+            return $exe;
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return []; // Devolver un array vacío o manejar el error según sea necesario
+        }
+    }
+  
+    public function putDocumentData($data){
+        try {
+            $sql = "UPDATE documento SET idestado = :idestado, fecha = :fecha, base = :base, impuestos = :impuestos
+                WHERE idnumeracion = :idnumeracion AND numero = :numero";
+
+            // Preparar y ejecutar la consulta con los valores
+            $exe = $this->conn->prepare($sql);
+            $exe->bindParam(':idnumeracion', $data['idnumeracion']);
+            $exe->bindParam(':idestado', $data['idestado']);
+            $exe->bindParam(':numero', $data['numero']);
+            $exe->bindParam(':fecha', $data['fecha']);
+            $exe->bindParam(':base', $data['base']);
+            $exe->bindParam(':impuestos', $data['impuestos']);
+            $exe->execute();
+
+            return $exe;
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return []; // Devolver un array vacío o manejar el error según sea necesario
+        }
+    }
+    
+    public function deleteDocumentData($data){
+        try {
+            // Consulta SQL para eliminar el documento por idnumeracion
+            $sql = "DELETE FROM documento WHERE idnumeracion = :idnumeracion AND numero = :numero";
+
+            // Preparar y ejecutar la consulta con el idnumeracion proporcionado
+            $exe = $this->conn->prepare($sql);
+            $exe->bindParam(':idnumeracion', $data['idnumeracion']);
+            $exe->bindParam(':numero', $data['numero']);
+            $exe->execute();
+
+            return $exe->rowCount(); // Devolver la cantidad de filas afectadas
+        } catch (PDOException $e) {
+            // Manejo de errores
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return false; // Devolver false u otra señal de error según sea necesario
+        }
+    }
 }

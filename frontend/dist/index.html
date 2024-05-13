@@ -44,7 +44,7 @@
                         <div class="row">
                             <div class="col-xl-3 col-md-6 ">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body mx-auto">Listar empresas</div>
+                                    <div class="card-body mx-auto">Buscar documento</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#enpoint1">Ver Detalles</button>
                                         <div class="modal fade" id="enpoint1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,7 +55,7 @@
                                                 <div class="mb-3 position-relative">
                                                   <label for="exampleInputEmail1" class="form-label text-black ">Numeracion de Empresa</label>
                                                   <input type="text" class="form-control" id="InputNumeracion" aria-describedby="emailHelp">
-                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion de la empresa.</div>
+                                                  <div id="text" class="form-text text-black" >Ingresa la numeracion del documento.</div>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Buscar</button>
                                               </form>
@@ -80,8 +80,8 @@
                                             <div class="modal-header mx-auto">
                                               <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint2">
                                                 <div class="mb-3 position-relative">
-                                                  <label for="empresa" class="text-black">Empresa:</label>
-                                                  <select class="form-select" aria-label="Default select example" name="empresa" id="empresa">
+                                                  <label for="empresa" class="text-black">Numeraciones:</label>
+                                                  <select class="form-select" aria-label="Default select example" name="Numeraciones" id="Numeraciones">
                                                     <option selected>Selecciona una</option>
                                                     <option value="1">empresa1</option>
                                                     <option value="2">empresa2</option>
@@ -89,20 +89,19 @@
                                                     <option value="4">empresa4</option>
                                                     <option value="5">empresa5</option>
                                                   </select>
-                                                  <label for="empresa" class="text-black">Numeracion</label>
-                                                  <select class="form-select" aria-label="Default select example" name="numeracion" id="numeracion">
+                                                  <label for="estado" class="text-black">Estado</label>
+                                                  <select class="form-select" aria-label="Default select example" name="numeracion" id="estado">
                                                     <option selected>Selecciona una</option>
-                                                    <option value="1">FA (Factura)</option>
-                                                    <option value="2">ND (Nota Débito)</option>
-                                                    <option value="3">NC (Nota Crédito)</option>
+                                                    <option value="1">Correcto</option>
+                                                    <option value="2">Validandose</option>
+                                                    <option value="3">Validado</option>
+                                                    <option value="4">Invalidado</option>
+                                                    <option value="5">Incorrecto</option>
+                                                    <option value="6">Caducado</option>
+                                                    <option value="7">Excede limite</option>
                                                   </select>
-                                                  <label for="empresa" class="text-black">TipoDocumento</label>
-                                                  <select class="form-select" aria-label="Default select example" name="tipoDocumento" id="tipoDocumento">
-                                                    <option selected>Selecciona una</option>
-                                                    <option value="1">Factura</option>
-                                                    <option value="3">Nota Débito</option>
-                                                    <option value="3">Nota Crédito</option>
-                                                  </select>
+                                                  <label for="fecha" class="text-black">Numero:</label>
+                                                  <input type="number" id="numero" class="form-control">
                                                   <label for="fecha" class="text-black">Fecha:</label>
                                                   <input type="date" id="fecha" class="form-control">
                                                   <label for="base" class="text-black">Base:</label>
@@ -132,20 +131,40 @@
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header mx-auto">
-                                              <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint3">
-                                                <div class="mb-3 position-relative">
-                                                  <label for="idDocument" class="form-label text-black ">ID de Documento: </label>
-                                                  <input type="text" class="form-control" id="documentoId" name="documentoId" required aria-describedby="emailHelp">
-                                                  <label for="fecha" class="text-black">Nueva fecha:</label>
-                                                  <input type="date" id="newfecha" class="form-control">
-                                                  <label for="base" class="text-black">Nueva base:</label>
-                                                  <input type="number" class="form-control" step="0.01" name="newbase" id="newbase" aria-describedby="base">
-                                                  <label for="base" class="text-black">Nuevos mpuestos:</label>
-                                                  <input type="number" class="form-control" step="0.01" name="newimpuestos" id="newimpuestos" aria-describedby="impuestos">
-                                                  <div id="text" class="form-text text-black" >Actualiza un documento de empresa.</div>
-                                                </div>
-                                                <button type="submit" class="btn btn-warning">Actualizar Documento</button>
-                                              </form>
+                                                <form class="d-flex full-width mt-6 row align-items-center" id="myFormEndpoint3">
+                                                    <div class="mb-3 position-relative">
+                                                      <label for="empresa" class="text-black">Numeracion para actualizar:</label>
+                                                      <select class="form-select" aria-label="Default select example" name="Numeraciones" id="Numeraciones">
+                                                        <option selected>Selecciona una</option>
+                                                        <option value="1">empresa1</option>
+                                                        <option value="2">empresa2</option>
+                                                        <option value="3">empresa3</option>
+                                                        <option value="4">empresa4</option>
+                                                        <option value="5">empresa5</option>
+                                                      </select>
+                                                      <label for="estado2" class="text-black">Estado</label>
+                                                      <select class="form-select" aria-label="Default select example" name="numeracion" id="newestado">
+                                                        <option selected>Selecciona una</option>
+                                                        <option value="1">Correcto</option>
+                                                        <option value="2">Validandose</option>
+                                                        <option value="3">Validado</option>
+                                                        <option value="4">Invalidado</option>
+                                                        <option value="5">Incorrecto</option>
+                                                        <option value="6">Caducado</option>
+                                                        <option value="7">Excede limite</option>
+                                                      </select>
+                                                      <label for="numero2" class="text-black">Nuevo numero:</label>
+                                                      <input type="number" id="numero2" class="form-control">
+                                                      <label for="fecha2" class="text-black">Nueva fecha:</label>
+                                                      <input type="date" id="fecha2" class="form-control">
+                                                      <label for="base2" class="text-black">Nuevo base:</label>
+                                                      <input type="number" class="form-control" step="0.01" name="base" id="base2" aria-describedby="base">
+                                                      <label for="impuestos2" class="text-black">Nuevo impuesto:</label>
+                                                      <input type="number" class="form-control" step="0.01" name="impuestos2" id="impuestos2" aria-describedby="impuestos">
+                                                      <div id="text" class="form-text text-black" >Crea un documento de empresa.</div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success">Crear Documento</button>
+                                                  </form>
                                             </div>
                                             <div class="modal-footer">
                                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
